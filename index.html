@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>今天吃啥 - 外卖选择困难症终结者</title>
+<meta name="description" content="160+外卖品类和品牌，帮你秒选今天吃什么！">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","WenQuanYi Micro Hei",system-ui,sans-serif;
+  background:#ecedf0;color:#333;line-height:1.6;overflow-x:hidden;
+  padding-bottom:calc(60px + env(safe-area-inset-bottom,0px));
+}
+.app{max-width:480px;margin:0 auto;background:#fff;min-height:100vh;position:relative;box-shadow:0 0 60px rgba(0,0,0,.06)}
+
+/* ===== Header ===== */
+.header{
+  position:sticky;top:0;z-index:100;
+  background:linear-gradient(135deg,#ff6b35 0%,#ff4757 50%,#ff6348 100%);
+  padding:16px 20px 14px;color:#fff;
+}
+.header h1{font-size:22px;font-weight:800;display:flex;align-items:center;gap:6px}
+.header .sub{font-size:11px;opacity:.8;margin-top:1px}
+
+/* ===== Random ===== */
+.random-wrap{padding:14px 20px 6px}
+.random-btn{
+  width:100%;padding:13px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,#ff6b35,#ff4757);
+  color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .2s;box-shadow:0 4px 16px rgba(255,71,87,.28);
+}
+.random-btn:active{transform:scale(.97)}
+.random-btn .dice{font-size:20px}
+.random-note{text-align:center;font-size:11px;color:#bbb;margin-top:4px}
+
+/* ===== Content ===== */
+.content{padding:12px 20px 24px}
+.section{margin-bottom:18px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.section-title{font-size:14px;font-weight:600;color:#555;display:flex;align-items:center;gap:5px}
+.section-title .dot{width:5px;height:5px;border-radius:50%;display:inline-block}
+.clear-btn{font-size:11px;color:#bbb;background:none;border:none;cursor:pointer;font-family:inherit;padding:3px 6px;border-radius:6px}
+.clear-btn:active{background:#f5f5f5}
+
+/* ===== Category Grid (美团 style) ===== */
+.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.cat-item{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:10px 2px 8px;border-radius:12px;background:#f7f8fa;
+  cursor:pointer;transition:all .22s;user-select:none;border:1.5px solid transparent;
+}
+.cat-item:active{transform:scale(.93)}
+.cat-item .cat-emoji{font-size:24px;margin-bottom:3px;transition:transform .2s}
+.cat-item .cat-text{font-size:11px;color:#666;font-weight:500;white-space:nowrap}
+.cat-item.active{background:#fff2ed;border-color:#ff6b35}
+.cat-item.active .cat-text{color:#ff6b35;font-weight:600}
+.cat-item.active .cat-emoji{transform:scale(1.15)}
+
+/* ===== Tags ===== */
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{
+  padding:6px 14px;border-radius:18px;font-size:13px;cursor:pointer;
+  transition:all .2s;user-select:none;border:1.5px solid transparent;
+  display:inline-flex;align-items:center;gap:3px;
+}
+.tag:active{transform:scale(.94)}
+.tag.flavor{background:#fff3e0;color:#e65100;border-color:#ffe0b2}
+.tag.flavor.active{background:#e65100;color:#fff;border-color:#e65100;box-shadow:0 2px 8px rgba(230,81,0,.2)}
+.tag.price{background:#e8f5e9;color:#2e7d32;border-color:#c8e6c9}
+.tag.price.active{background:#2e7d32;color:#fff;border-color:#2e7d32;box-shadow:0 2px 8px rgba(46,125,50,.2)}
+.tag.active::before{content:'✓ ';font-size:10px;font-weight:700}
+
+/* ===== Divider ===== */
+.divider{height:6px;background:#f0f1f3;margin:4px -20px 0}
+
+/* ===== Results ===== */
+.results-section{padding-top:14px}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.results-header h2{font-size:16px;font-weight:700;display:flex;align-items:center;gap:5px}
+.results-count{font-size:11px;color:#999;background:#f5f6f8;padding:2px 10px;border-radius:10px}
+
+.search-wrap{margin-bottom:12px;position:relative}
+.search-input{
+  width:100%;padding:9px 14px 9px 34px;
+  border:1.5px solid #e8e8e8;border-radius:11px;
+  font-size:13px;font-family:inherit;background:#fafafa;color:#333;
+  transition:border-color .2s;outline:none;
+}
+.search-input:focus{border-color:#ff6b35;background:#fff}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;color:#bbb}
+
+/* ===== Dish Grid ===== */
+.dish-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.dish-card{
+  background:#fafbfc;border:1px solid #f0f1f3;border-radius:13px;
+  padding:11px;cursor:pointer;transition:all .2s;animation:fadeUp .3s ease both;
+}
+.dish-card:hover{border-color:#e0e0e0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.dish-card:active{transform:scale(.97)}
+.dish-card.brand-card{background:linear-gradient(135deg,#fffbf5,#fff8f0);border-color:#ffe8d6}
+.dish-card .d-name{font-size:14px;font-weight:600;margin-bottom:5px;line-height:1.35;color:#333;display:flex;align-items:center;gap:4px}
+.dish-card .brand-badge{
+  font-size:9px;background:linear-gradient(135deg,#ffd700,#ffb300);color:#7c4a00;
+  padding:1px 5px;border-radius:4px;font-weight:600;white-space:nowrap;flex-shrink:0;
+}
+.dish-card .d-desc{font-size:11px;color:#999;margin-bottom:6px;line-height:1.4;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dish-card .d-bottom{display:flex;align-items:center;justify-content:space-between}
+.dish-card .d-price{font-size:12px;color:#ff6b35;font-weight:600}
+.dish-card .d-extra{display:flex;align-items:center;gap:4px}
+.dish-card .d-cat{font-size:9px;padding:2px 6px;border-radius:5px;background:#f0f1f3;color:#888}
+.dish-card .d-spicy{font-size:10px}
+
+.empty{text-align:center;padding:44px 20px;color:#bbb;grid-column:1/-1}
+.empty .icon{font-size:48px;margin-bottom:10px;opacity:.6}
+.empty p{font-size:13px;line-height:1.8}
+
+/* ===== TabBar ===== */
+.tabbar{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;height:56px;
+  background:#fff;border-top:1px solid #eee;
+  display:flex;align-items:center;justify-content:space-around;
+  z-index:200;padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.tab-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;cursor:pointer;padding:5px 0;color:#bbb;
+  transition:color .2s;border:none;background:transparent;font-family:inherit;
+}
+.tab-item:active{opacity:.7}
+.tab-item.active{color:#ff6b35}
+.tab-item svg{width:21px;height:21px;fill:currentColor}
+.tab-item span{font-size:10px;font-weight:500}
+
+/* ===== Detail Modal ===== */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal-sheet{
+  width:100%;max-width:480px;background:#fff;border-radius:20px 20px 0 0;
+  padding:20px 24px 34px;transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.32,.72,0,1);
+}
+.modal-overlay.show .modal-sheet{transform:translateY(0)}
+.modal-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 16px}
+.modal-sheet h3{font-size:20px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.modal-info{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.modal-info .mi{font-size:12px;padding:4px 12px;border-radius:10px;font-weight:500}
+.mi-cat{background:#e3f2fd;color:#1565c0}
+.mi-price{background:#e8f5e9;color:#2e7d32}
+.mi-spicy{background:#fbe9e7;color:#d84315}
+.mi-brand{background:linear-gradient(135deg,#fff8e1,#fff3e0);color:#e65100;border:1px solid #ffe0b2}
+.mi-flavor{background:#f3e5f5;color:#7b1fa2}
+.modal-tip{
+  background:linear-gradient(135deg,#fff8e1,#fff3e0);border-radius:12px;
+  padding:13px;font-size:13px;color:#e65100;line-height:1.7;
+}
+.modal-order{
+  margin-top:14px;width:100%;padding:13px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,#ff6b35,#ff4757);color:#fff;
+  font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;
+  transition:all .2s;
+}
+.modal-order:active{transform:scale(.97)}
+
+/* ===== Spin Modal ===== */
+.spin-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.spin-overlay.show{opacity:1;pointer-events:auto}
+.spin-card{
+  background:#fff;border-radius:24px;padding:30px 24px;text-align:center;
+  width:calc(100% - 56px);max-width:360px;
+  transform:scale(.8);transition:transform .3s cubic-bezier(.32,.72,0,1);
+}
+.spin-overlay.show .spin-card{transform:scale(1)}
+.spin-card .s-emoji{font-size:52px;margin-bottom:10px;display:block}
+.spin-card .s-label{font-size:12px;color:#999;margin-bottom:6px}
+.spin-card .s-name{
+  font-size:24px;font-weight:800;color:#333;
+  min-height:36px;display:flex;align-items:center;justify-content:center;
+  transition:color .3s;
+}
+.spin-card .s-name.final{color:#ff6b35}
+.spin-card .s-info{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+  margin-top:10px;min-height:22px;
+}
+.spin-card .s-info .si{font-size:11px;padding:3px 10px;border-radius:8px;font-weight:500}
+.si-price{background:#e8f5e9;color:#2e7d32}
+.si-cat{background:#e3f2fd;color:#1565c0}
+.si-brand{background:#fff3e0;color:#e65100}
+.spin-card .s-desc{font-size:12px;color:#999;margin-top:8px;line-height:1.5;min-height:18px}
+.spin-card .s-actions{margin-top:18px;display:flex;gap:10px}
+.spin-card .s-actions button{
+  flex:1;padding:11px;border:none;border-radius:12px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;
+}
+.spin-card .s-actions button:active{transform:scale(.96)}
+.btn-again{background:#f5f5f5;color:#666}
+.btn-ok{background:linear-gradient(135deg,#ff6b35,#ff4757);color:#fff;box-shadow:0 3px 10px rgba(255,71,87,.2)}
+
+.back-top{
+  position:fixed;bottom:70px;right:calc(50% - 220px);
+  width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid #eee;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08);
+  opacity:0;pointer-events:none;transition:all .3s;z-index:150;
+}
+.back-top.show{opacity:1;pointer-events:auto}
+.back-top:active{transform:scale(.9)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@media(min-width:481px){body{background:#e4e5e8}}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <div class="header">
+    <h1>🍽️ 今天吃啥</h1>
+    <div class="sub">160+ 外卖品类 & 品牌，帮你秒选！</div>
+  </div>
+
+  <div class="random-wrap">
+    <button class="random-btn" onclick="spinRandom()">
+      <span class="dice">🎲</span> 选不了！帮我随机来一个
+    </button>
+    <div class="random-note">仅从主食中随机推荐，不含饮品甜品</div>
+  </div>
+
+  <div class="content">
+    <!-- 品类 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title"><span class="dot" style="background:#ff6b35"></span> 想吃什么</div>
+        <button class="clear-btn" onclick="clearCat()">清除</button>
+      </div>
+      <div class="cat-grid" id="catGrid"></div>
+    </div>
+
+    <!-- 口味 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title"><span class="dot" style="background:#e65100"></span> 口味偏好</div>
+        <button class="clear-btn" onclick="clearGroup('flavor')">清除</button>
+      </div>
+      <div class="tags" id="flavorTags"></div>
+    </div>
+
+    <!-- 预算 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title"><span class="dot" style="background:#2e7d32"></span> 人均预算</div>
+        <button class="clear-btn" onclick="clearGroup('price')">清除</button>
+      </div>
+      <div class="tags" id="priceTags"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 结果 -->
+    <div class="section results-section">
+      <div class="results-header">
+        <h2>📋 为你推荐</h2>
+        <span class="results-count" id="resultCount">0 个</span>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="searchInput" type="text" placeholder="搜索品类或品牌名…" oninput="renderResults()">
+      </div>
+      <div class="dish-grid" id="dishGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TabBar -->
+<div class="tabbar">
+  <button class="tab-item active" onclick="switchTab(this)">
+    <svg viewBox="0 0 24 24"><path d="M8.1 13.34l2.83-2.83L3.91 3.5a2 2 0 000 2.82l4.19 4.19zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.46-4.2-1.1-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87a1 1 0 000 1.41 1 1 0 001.41 0L12 14.41l6.88 6.88a1 1 0 001.41 0 1 1 0 000-1.41L13.41 13l1.47-1.47z"/></svg>
+    <span>点餐</span>
+  </button>
+  <button class="tab-item" onclick="switchTab(this)">
+    <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+    <span>收藏</span>
+  </button>
+  <button class="tab-item" onclick="switchTab(this)">
+    <svg viewBox="0 0 24 24"><path d="M12 10.9c-.61 0-1.1.49-1.1 1.1s.49 1.1 1.1 1.1c.61 0 1.1-.49 1.1-1.1s-.49-1.1-1.1-1.1zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm2.19 12.19L6 18l3.81-8.19L18 6l-3.81 8.19z"/></svg>
+    <span>发现</span>
+  </button>
+  <button class="tab-item" onclick="switchTab(this)">
+    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    <span>我的</span>
+  </button>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detailModal" onclick="closeDetail(event)">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <h3 id="detailName"></h3>
+    <div class="modal-info" id="detailInfo"></div>
+    <div class="modal-tip" id="detailTip"></div>
+    <button class="modal-order" onclick="closeDetail()">👆 打开美团/饿了么搜索下单</button>
+  </div>
+</div>
+
+<!-- Spin Modal -->
+<div class="spin-overlay" id="spinOverlay" onclick="closeSpin(event)">
+  <div class="spin-card" onclick="event.stopPropagation()">
+    <span class="s-emoji" id="spinEmoji">🤔</span>
+    <div class="s-label" id="spinLabel">正在帮你选…</div>
+    <div class="s-name" id="spinName">-</div>
+    <div class="s-info" id="spinInfo"></div>
+    <div class="s-desc" id="spinDesc"></div>
+    <div class="s-actions" id="spinActions" style="display:none">
+      <button class="btn-again" onclick="spinRandom()">🎲 再来</button>
+      <button class="btn-ok" onclick="closeSpin()">就它了 👍</button>
+    </div>
+  </div>
+</div>
+
+<div class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</div>
+
+<script>
+/* ======================== DATA ======================== */
+// [名称, 品类, 辣度0-3, 价格区间, 价格档1-4, 口味标签, 简介, 品牌0/1]
+const RAW = [
+
+// ===== 快餐简餐 =====
+["黄焖鸡米饭","快餐",1,"¥12-18",1,"微辣","鸡肉软烂入味，配米饭绝了",0],
+["盖浇饭","快餐",0,"¥10-18",1,"咸鲜","菜盖在饭上，种类超多",0],
+["蛋炒饭","快餐",0,"¥8-14",1,"咸鲜","最简单也是最考究的快餐",0],
+["炒面/炒粉","快餐",0,"¥10-16",1,"咸鲜","锅气十足的经典主食",0],
+["烤肉拌饭","快餐",1,"¥12-18",1,"微辣","烤肉配米饭，性价比之王",0],
+["卤肉饭","快餐",0,"¥10-16",1,"咸鲜","台式卤肉浇上热饭，满足",0],
+["鸡排饭","快餐",0,"¥12-18",1,"咸鲜","炸鸡排盖饭，学生党最爱",0],
+["排骨饭","快餐",0,"¥15-22",2,"咸鲜","大块排骨配饭，肉食者福音",0],
+["猪脚饭","快餐",0,"¥15-22",2,"咸鲜","隆江猪脚饭，胶原蛋白满满",0],
+["咖喱饭","快餐",1,"¥15-22",2,"微辣","浓郁咖喱酱汁拌饭",0],
+["煲仔饭","快餐",0,"¥18-28",2,"咸鲜","锅巴焦香是灵魂",0],
+["木桶饭","快餐",0,"¥12-20",1,"咸鲜","自选菜品搭配，丰俭由人",0],
+["便当/盒饭","快餐",0,"¥10-18",1,"咸鲜","中式快餐标配，方便实惠",0],
+["铁板饭","快餐",0,"¥12-20",1,"咸鲜","铁板滋滋响，出餐超快",0],
+["烧鸭饭/烤鸭饭","快餐",0,"¥18-25",2,"咸鲜","脆皮烧鸭配饭，港粤风味",0],
+["梅菜扣肉饭","快餐",0,"¥14-20",1,"咸鲜","梅菜搭配五花肉，下饭一绝",0],
+["黄焖排骨","快餐",1,"¥15-22",2,"微辣","跟黄焖鸡同类，排骨版本",0],
+["鸡公煲","快餐",2,"¥18-28",2,"辣","鸡肉软烂入味，辣度上头",0],
+["石锅拌饭","快餐",1,"¥15-22",2,"微辣","拌匀了吃，锅底有锅巴",0],
+["焗饭","快餐",0,"¥15-22",2,"咸鲜","芝士焗饭，拉丝的快乐",0],
+
+// ===== 面食 =====
+["兰州拉面","面食",0,"¥12-20",1,"清淡","一清二白三红四绿五黄",0],
+["重庆小面","面食",2,"¥10-16",1,"麻辣","麻辣鲜香，早餐也能来一碗",0],
+["热干面","面食",0,"¥8-12",1,"咸鲜","芝麻酱拌面，武汉经典",0],
+["刀削面","面食",0,"¥10-16",1,"咸鲜","面片厚实有嚼劲",0],
+["炸酱面","面食",0,"¥10-16",1,"咸鲜","老北京味道，黄瓜丝必加",0],
+["油泼面","面食",2,"¥10-16",1,"辣","热油一泼，辣子飘香",0],
+["biangbiang面","面食",2,"¥15-22",2,"辣","裤带宽面，嚼着过瘾",0],
+["担担面","面食",2,"¥10-16",1,"麻辣","肉臊子拌面简单美味",0],
+["牛肉面","面食",0,"¥15-25",2,"咸鲜","大块牛肉+浓汤+劲道面",0],
+["板面","面食",2,"¥10-16",1,"辣","安徽太和特色，辣油底",0],
+["烩面","面食",0,"¥12-18",1,"咸鲜","河南烩面，羊汤底浓郁",0],
+["云吞面","面食",0,"¥10-16",1,"清淡","竹升面弹牙，云吞鲜美",0],
+["臊子面","面食",1,"¥10-16",1,"酸辣","面薄汤宽，酸辣爽口",0],
+["葱油拌面","面食",0,"¥8-14",1,"咸鲜","葱油飘香，简单即美味",0],
+["川味凉面","面食",2,"¥8-14",1,"麻辣","夏天不想吃热的首选",0],
+
+// ===== 粉/米线 =====
+["螺蛳粉","粉面",2,"¥12-20",1,"酸辣","闻着臭吃着香，上瘾",0],
+["酸辣粉","粉面",2,"¥10-16",1,"酸辣","酸辣过瘾，花生碎必加",0],
+["桂林米粉","粉面",1,"¥10-16",1,"微辣","卤水米粉，好吃不贵",0],
+["过桥米线","粉面",0,"¥15-25",2,"清淡","一碗滚烫的鸡汤米线",0],
+["湖南米粉","粉面",2,"¥10-16",1,"辣","嗦粉一时爽",0],
+["土豆粉","粉面",1,"¥10-16",1,"微辣","筋道滑嫩的土豆粉丝",0],
+["肠粉","粉面",0,"¥8-15",1,"清淡","广式早餐之王",0],
+["新疆炒米粉","粉面",3,"¥15-22",2,"辣","又辣又过瘾停不下来",0],
+["砂锅米线","粉面",1,"¥12-20",1,"微辣","砂锅保温好，冬天必点",0],
+["河粉/干炒牛河","粉面",0,"¥12-18",1,"咸鲜","镬气十足的广式经典",0],
+
+// ===== 小吃 =====
+["煎饼果子","小吃",0,"¥6-12",1,"咸鲜","天津名早餐，薄脆是灵魂",0],
+["手抓饼","小吃",0,"¥6-10",1,"咸鲜","加蛋加肠加生菜",0],
+["鸡蛋灌饼","小吃",0,"¥5-10",1,"咸鲜","灌鸡蛋的饼，外酥里嫩",0],
+["肉夹馍","小吃",0,"¥8-15",1,"咸鲜","中式汉堡，肥瘦相间最好",0],
+["凉皮","小吃",1,"¥8-12",1,"酸辣","筋道凉皮+麻酱，夏天绝配",0],
+["生煎包","小吃",0,"¥10-16",1,"咸鲜","底部焦脆，一口爆汁",0],
+["小笼包","小吃",0,"¥15-25",2,"清淡","先戳皮吸汤，再吃馅",0],
+["锅贴","小吃",0,"¥10-16",1,"咸鲜","比饺子多了一层焦底",0],
+["饺子","小吃",0,"¥10-18",1,"咸鲜","酸菜白菜韭菜馅随你选",0],
+["馄饨","小吃",0,"¥10-16",1,"清淡","鲜肉大馄饨超满足",0],
+["包子","小吃",0,"¥5-12",1,"咸鲜","鲜肉包、豆沙包应有尽有",0],
+["烤冷面","小吃",1,"¥8-12",1,"酸甜","东北街头小吃，甜辣酱加蛋",0],
+["章鱼小丸子","小吃",0,"¥10-16",1,"咸鲜","外酥内软，沙拉酱木鱼花",0],
+["关东煮","小吃",0,"¥10-20",1,"清淡","便利店暖心之选",0],
+["鸡蛋仔","小吃",0,"¥10-16",1,"甜","QQ弹弹的港式小吃",0],
+["臭豆腐","小吃",2,"¥8-15",1,"辣","闻着臭吃着香的街头美食",0],
+
+// ===== 麻辣烫/冒菜 =====
+["麻辣烫","麻辣烫",2,"¥15-30",2,"麻辣","自选食材，丰俭由人",0],
+["冒菜","麻辣烫",2,"¥15-25",2,"麻辣","一个人的火锅",0],
+["麻辣拌","麻辣烫",2,"¥12-22",1,"麻辣","拌着吃的麻辣烫，东北特色",0],
+["串串香","麻辣烫",2,"¥20-40",2,"麻辣","数签签的快乐",0],
+["冒烤鸭","麻辣烫",2,"¥15-25",2,"辣","鸭肉+蔬菜冒着吃",0],
+["麻辣香锅","麻辣烫",3,"¥25-45",2,"麻辣","想吃啥加啥自由度最高",0],
+
+// ===== 烧烤 =====
+["烧烤套餐","烧烤",2,"¥25-50",2,"辣","各种烤串拼盘，夜宵之王",0],
+["烤串","烧烤",2,"¥20-40",2,"辣","羊肉串+牛肉串+鸡翅一把梭",0],
+["烤鱼","烧烤",2,"¥35-60",3,"麻辣","豆豉味/麻辣味最受欢迎",0],
+["铁板鱿鱼","烧烤",2,"¥10-16",1,"辣","街边烧烤摊的童年味道",0],
+["烤肉","烧烤",1,"¥30-50",3,"咸鲜","五花肉+生菜+蒜瓣",0],
+["锡纸花甲","烧烤",2,"¥15-25",2,"辣","花甲+金针菇+粉丝",0],
+["铁板烧","烧烤",1,"¥25-40",2,"咸鲜","铁板上的滋滋声",0],
+
+// ===== 火锅 =====
+["火锅外卖","火锅",2,"¥40-80",3,"麻辣","在家也能涮火锅",0],
+["小火锅","火锅",1,"¥25-40",2,"麻辣","一人食旋转小火锅",0],
+["鱼火锅","火锅",2,"¥30-55",3,"辣","酸菜鱼火锅最经典",0],
+["牛肉火锅","火锅",1,"¥35-60",3,"咸鲜","潮汕牛肉火锅鲜到飞起",0],
+["椰子鸡火锅","火锅",0,"¥40-65",3,"清淡","椰子水煮鸡，甜鲜原味",0],
+["菌菇火锅","火锅",0,"¥30-50",3,"清淡","各种菌菇煮出天然鲜味",0],
+
+// ===== 粥/汤 =====
+["皮蛋瘦肉粥","粥汤",0,"¥8-15",1,"清淡","胃不舒服时的温柔",0],
+["淮南牛肉汤","粥汤",0,"¥12-20",1,"咸鲜","浓郁牛骨汤底，冬天暖胃",0],
+["胡辣汤","粥汤",2,"¥6-12",1,"辣","河南经典早餐，暖胃神器",0],
+["豆腐脑","粥汤",0,"¥5-10",1,"清淡","甜咸之争永不停歇",0],
+["瓦罐汤","粥汤",0,"¥10-18",1,"清淡","小瓦罐慢炖浓汤",0],
+["砂锅粥","粥汤",0,"¥15-30",2,"清淡","生滚海鲜粥料超多",0],
+["南瓜粥","粥汤",0,"¥6-12",1,"甜","软糯香甜的养胃之选",0],
+["鸡汤/排骨汤","粥汤",0,"¥15-25",2,"清淡","真材实料的传统老汤",0],
+["豆浆油条","粥汤",0,"¥6-12",1,"清淡","中式早餐黄金搭档",0],
+
+// ===== 菜馆 =====
+["川菜馆","菜馆",2,"¥25-50",2,"麻辣","宫保鸡丁/鱼香肉丝/回锅肉",0],
+["湘菜馆","菜馆",2,"¥25-50",2,"辣","辣椒炒肉/剁椒鱼头",0],
+["粤菜馆","菜馆",0,"¥30-60",3,"清淡","白切鸡/烧腊/煲汤",0],
+["东北菜馆","菜馆",0,"¥20-40",2,"咸鲜","锅包肉/地三鲜/铁锅炖",0],
+["西北菜馆","菜馆",1,"¥20-40",2,"微辣","大盘鸡/手抓羊肉",0],
+["江浙菜馆","菜馆",0,"¥25-50",2,"清淡","东坡肉/糖醋排骨/红烧肉",0],
+["新疆菜馆","菜馆",2,"¥20-40",2,"辣","大盘鸡/烤羊排/手抓饭",0],
+["云南菜馆","菜馆",1,"¥20-40",2,"微辣","汽锅鸡/过桥米线/鲜花饼",0],
+["东南亚餐厅","菜馆",1,"¥25-45",2,"酸辣","冬阴功/菠萝饭/椰浆饭",0],
+["日式料理","菜馆",0,"¥25-50",2,"清淡","寿司/拉面/定食/丼饭",0],
+["韩式料理","菜馆",1,"¥20-40",2,"辣","石锅拌饭/炸鸡/部队锅",0],
+["私房菜","菜馆",0,"¥30-60",3,"咸鲜","家常味道，量大实惠",0],
+
+// ===== 特色美食 =====
+["酸菜鱼","特色",1,"¥25-45",2,"酸辣","酸爽开胃，配米饭超下饭",0],
+["水煮鱼/水煮肉","特色",3,"¥25-45",2,"麻辣","麻辣重口味爱好者必点",0],
+["小龙虾","特色",3,"¥40-80",3,"麻辣","蒜蓉/麻辣/十三香随你选",0],
+["烤鸭","特色",0,"¥30-60",3,"咸鲜","片皮蘸酱裹饼，经典",0],
+["卤味拼盘","特色",1,"¥15-30",2,"辣","鸭脖鸭翅鸭锁骨一起来",0],
+["大盘鸡","特色",2,"¥30-50",2,"辣","最后拌面吃，汤汁全吸收",0],
+["铁锅炖","特色",0,"¥40-70",3,"咸鲜","大铁锅+贴饼子，量大管饱",0],
+["椰子鸡","特色",0,"¥40-65",3,"清淡","椰子水煮鸡，清甜鲜美",0],
+
+// ===== 品牌·西式快餐 =====
+["肯德基(KFC)","西式快餐",0,"¥20-45",2,"咸鲜","炸鸡汉堡薯条，全球连锁",1],
+["麦当劳","西式快餐",0,"¥20-45",2,"咸鲜","金拱门，巨无霸/麦辣鸡腿堡",1],
+["华莱士","西式快餐",0,"¥12-25",1,"咸鲜","平价炸鸡汉堡，门店超多",1],
+["塔斯汀","西式快餐",0,"¥15-30",2,"咸鲜","中国汉堡，现烤堡胚",1],
+["汉堡王","西式快餐",0,"¥25-45",2,"咸鲜","火烤牛肉堡，肉感十足",1],
+["德克士","西式快餐",0,"¥18-35",2,"咸鲜","脆皮炸鸡专家",1],
+["必胜客","西式快餐",0,"¥35-65",3,"咸鲜","披萨/意面，聚餐首选",1],
+["达美乐","西式快餐",0,"¥30-55",3,"咸鲜","30分钟必达的披萨",1],
+["赛百味(Subway)","西式快餐",0,"¥25-40",2,"清淡","DIY三明治，相对健康",1],
+["派乐汉堡","西式快餐",0,"¥12-22",1,"咸鲜","下沉市场的汉堡好选择",1],
+
+// ===== 品牌·中式连锁 =====
+["老乡鸡","快餐",0,"¥15-28",2,"清淡","中式快餐龙头，肥西老母鸡汤",1],
+["大米先生","快餐",0,"¥15-25",2,"咸鲜","称重计费，想吃啥夹啥",1],
+["乡村基","快餐",1,"¥15-25",2,"微辣","西南地区中式快餐之王",1],
+["真功夫","快餐",0,"¥18-30",2,"清淡","蒸品快餐，相对健康",1],
+["和合谷","快餐",0,"¥15-25",2,"咸鲜","北方快餐品牌",1],
+["永和大王","快餐",0,"¥12-22",1,"清淡","豆浆油条+卤肉饭",1],
+["吉野家","快餐",0,"¥20-35",2,"咸鲜","日式牛肉饭连锁",1],
+["食其家(Sukiya)","快餐",0,"¥22-38",2,"咸鲜","日式牛丼专门店",1],
+["南城香","快餐",0,"¥15-28",2,"咸鲜","馄饨/饭/串，北京必吃",1],
+["章福元","快餐",0,"¥12-20",1,"咸鲜","实惠中式快餐",1],
+
+// ===== 品牌·面食 =====
+["味千拉面","面食",0,"¥25-40",2,"咸鲜","日式猪骨拉面连锁",1],
+["和府捞面","面食",0,"¥28-45",2,"咸鲜","书房里的养生面",1],
+["陈香贵","面食",0,"¥20-32",2,"咸鲜","兰州牛肉面新势力",1],
+["马记永","面食",0,"¥20-32",2,"咸鲜","兰州手撕牛肉面",1],
+["遇见小面","面食",2,"¥18-28",2,"麻辣","重庆小面品牌连锁",1],
+["五爷拌面","面食",1,"¥12-20",1,"微辣","拌面+卤蛋的标配组合",1],
+
+// ===== 品牌·麻辣烫 =====
+["杨国福麻辣烫","麻辣烫",2,"¥15-30",2,"麻辣","称重麻辣烫鼻祖",1],
+["张亮麻辣烫","麻辣烫",2,"¥15-28",2,"麻辣","骨汤麻辣烫，可选不辣",1],
+["觅姐麻辣烫","麻辣烫",2,"¥15-28",2,"麻辣","精致麻辣烫新选择",1],
+["小谷姐姐麻辣拌","麻辣烫",2,"¥12-22",1,"麻辣","东北麻辣拌品牌",1],
+
+// ===== 品牌·小吃卤味 =====
+["正新鸡排","小吃",1,"¥8-16",1,"微辣","街边巨无霸鸡排",1],
+["绝味鸭脖","小吃",2,"¥15-35",2,"辣","卤味零食代表品牌",1],
+["周黑鸭","小吃",2,"¥15-35",2,"辣","甜辣风味卤鸭脖",1],
+["紫燕百味鸡","小吃",1,"¥15-30",2,"微辣","百味鸡/夫妻肺片/藤椒鸡",1],
+["小杨生煎","小吃",0,"¥12-20",1,"咸鲜","上海生煎包品牌",1],
+["袁记云饺","小吃",0,"¥12-22",1,"清淡","现包鲜饺/云吞",1],
+["喜姐炸串","小吃",1,"¥15-25",2,"微辣","炸串界的网红品牌",1],
+["夸父炸串","小吃",1,"¥12-22",1,"微辣","万店炸串连锁",1],
+
+// ===== 品牌·酸菜鱼/特色 =====
+["太二酸菜鱼","特色",1,"¥40-65",3,"酸辣","酸菜比鱼好吃的网红店",1],
+["鱼你在一起","特色",1,"¥20-32",2,"酸辣","一人食酸菜鱼快餐",1],
+["海底捞(外卖)","火锅",2,"¥50-80",4,"麻辣","服务天花板，在家也能吃",1],
+["呷哺呷哺","火锅",1,"¥30-50",3,"麻辣","一人食小火锅品牌",1],
+["巴奴毛肚火锅","火锅",2,"¥50-80",4,"麻辣","毛肚才是灵魂",1],
+
+// === 奶茶品牌 ===
+["蜜雪冰城","奶茶",0,"¥4-10",1,"甜","你爱我我爱你，性价比之王",1],
+["茶百道","奶茶",0,"¥10-18",1,"甜","杨枝甘露/豆乳茶是招牌",1],
+["古茗","奶茶",0,"¥10-18",1,"甜","水果茶界的扛把子",1],
+["沪上阿姨","奶茶",0,"¥10-18",1,"甜","五谷茶/血糯米奶茶",1],
+["书亦烧仙草","奶茶",0,"¥10-16",1,"甜","半杯都是料的烧仙草",1],
+["一点点","奶茶",0,"¥8-15",1,"甜","波霸奶茶的经典",1],
+["CoCo都可","奶茶",0,"¥8-16",1,"甜","百香果双响炮yyds",1],
+["喜茶","奶茶",0,"¥15-30",2,"甜","新式茶饮开创者",1],
+["奈雪的茶","奶茶",0,"¥15-30",2,"甜","茶+软欧包的搭配",1],
+["霸王茶姬","奶茶",0,"¥12-22",1,"甜","伯牙绝弦，东方茶",1],
+["茉莉奶白","奶茶",0,"¥12-20",1,"甜","茉莉花香的清新奶茶",1],
+["甜啦啦","奶茶",0,"¥4-12",1,"甜","下沉市场的甜蜜暴击",1],
+["益禾堂","奶茶",0,"¥8-14",1,"甜","烤奶是灵魂单品",1],
+["茶颜悦色","奶茶",0,"¥12-20",1,"甜","长沙特产，幽兰拿铁必喝",1],
+["柠季","奶茶",0,"¥8-16",1,"酸甜","手打柠檬茶专门店",1],
+["7分甜","奶茶",0,"¥10-18",1,"甜","杨枝甘露天花板",1],
+["乐乐茶","奶茶",0,"¥15-28",2,"甜","脏脏茶/脏脏包发明者",1],
+["悸动烧仙草","奶茶",0,"¥8-15",1,"甜","烧仙草系列超好喝",1],
+
+// === 咖啡品牌 ===
+["瑞幸咖啡","咖啡",0,"¥10-20",1,"清淡","9.9的生椰拿铁真香",1],
+["星巴克","咖啡",0,"¥28-48",2,"清淡","全球连锁，氛围感拉满",1],
+["库迪咖啡","咖啡",0,"¥10-18",1,"清淡","瑞幸平替，价格更卷",1],
+["Manner咖啡","咖啡",0,"¥15-25",2,"清淡","自带杯减5元的精品咖啡",1],
+["幸运咖","咖啡",0,"¥6-15",1,"甜","蜜雪冰城旗下咖啡品牌",1],
+["挪瓦咖啡(Nowwa)","咖啡",0,"¥12-20",1,"清淡","果咖系列超清爽",1],
+["Tims咖啡","咖啡",0,"¥18-30",2,"清淡","加拿大国民咖啡",1],
+
+// === 甜品蛋糕品牌 ===
+["好利来","甜品",0,"¥15-40",2,"甜","半熟芝士永远的神",1],
+["鲍师傅","甜品",0,"¥10-25",1,"甜","肉松小贝排队王",1],
+["泸溪河","甜品",0,"¥10-25",1,"甜","桃酥/绿豆糕中式糕点",1],
+["85°C","甜品",0,"¥10-25",1,"甜","面包+咖啡台式连锁",1],
+["幸福西饼","甜品",0,"¥60-160",4,"甜","生日蛋糕外卖首选",1],
+["元祖","甜品",0,"¥50-150",4,"甜","雪月饼/蛋糕经典品牌",1],
+["满记甜品","甜品",0,"¥20-35",2,"甜","港式甜品连锁",1],
+["DQ冰雪皇后","甜品",0,"¥15-35",2,"甜","暴风雪冰淇淋，倒杯不洒",1],
+["哈根达斯","甜品",0,"¥35-80",3,"甜","冰淇淋中的爱马仕",1],
+["瑞可爷爷","甜品",0,"¥10-20",1,"甜","现烤芝士蛋糕",1],
+["熊猫不走","甜品",0,"¥80-200",4,"甜","会跳舞的生日蛋糕",1],
+["奈雪(烘焙)","甜品",0,"¥12-28",2,"甜","软欧包系列蛮不错",1],
+];
+
+const dishes = RAW.map(r => ({
+  name:r[0], cat:r[1], spicy:r[2], priceRange:r[3], priceLevel:r[4],
+  flavor:r[5], desc:r[6], brand:!!r[7]
+}));
+
+/* ==================== CATEGORIES ==================== */
+const CATEGORIES = [
+  {id:'快餐',emoji:'🍱',label:'快餐'},
+  {id:'面食',emoji:'🍜',label:'面食'},
+  {id:'粉面',emoji:'🍝',label:'粉面'},
+  {id:'小吃',emoji:'🥟',label:'小吃'},
+  {id:'烧烤',emoji:'🔥',label:'烧烤'},
+  {id:'麻辣烫',emoji:'🌶',label:'麻辣烫'},
+  {id:'火锅',emoji:'🫕',label:'火锅'},
+  {id:'粥汤',emoji:'🥣',label:'粥汤'},
+  {id:'菜馆',emoji:'🏮',label:'菜馆'},
+  {id:'特色',emoji:'⭐',label:'特色'},
+  {id:'西式快餐',emoji:'🍔',label:'西快'},
+  {id:'日韩',emoji:'🍣',label:'日韩'},
+  {id:'奶茶',emoji:'🧋',label:'奶茶'},
+  {id:'咖啡',emoji:'☕',label:'咖啡'},
+  {id:'甜品',emoji:'🍰',label:'甜品'},
+];
+
+const FLAVORS = ['不辣','微辣','中辣','特辣','酸辣','麻辣','酸甜','清淡','甜'];
+const PRICES = ['≤15元','15-30元','30-50元','50元+'];
+const MEAL_CATS = new Set(['快餐','面食','粉面','小吃','烧烤','麻辣烫','火锅','粥汤','菜馆','特色','西式快餐','日韩']);
+
+/* ==================== STATE ==================== */
+const selCat = new Set();
+const selFlavor = new Set();
+const selPrice = new Set();
+
+/* ==================== RENDER CATEGORY GRID ==================== */
+(function renderCatGrid(){
+  const grid = document.getElementById('catGrid');
+  grid.innerHTML = CATEGORIES.map(c =>
+    `<div class="cat-item" data-id="${c.id}" onclick="toggleCat(this)">
+      <span class="cat-emoji">${c.emoji}</span>
+      <span class="cat-text">${c.label}</span>
+    </div>`
+  ).join('');
+})();
+
+function toggleCat(el){
+  const id = el.dataset.id;
+  if(selCat.has(id)){ selCat.delete(id); el.classList.remove('active'); }
+  else{ selCat.add(id); el.classList.add('active'); }
+  renderResults();
+}
+function clearCat(){
+  selCat.clear();
+  document.querySelectorAll('.cat-item').forEach(e=>e.classList.remove('active'));
+  renderResults();
+}
+
+/* ==================== RENDER TAGS ==================== */
+function renderTagGroup(containerId, items, group){
+  document.getElementById(containerId).innerHTML = items.map(item =>
+    `<span class="tag ${group}" data-val="${item}" data-group="${group}" onclick="toggleTag(this)">${item}</span>`
+  ).join('');
+}
+renderTagGroup('flavorTags', FLAVORS, 'flavor');
+renderTagGroup('priceTags', PRICES, 'price');
+
+function toggleTag(el){
+  const val=el.dataset.val, group=el.dataset.group;
+  const set = group==='flavor'?selFlavor:selPrice;
+  if(set.has(val)){ set.delete(val); el.classList.remove('active'); }
+  else{ set.add(val); el.classList.add('active'); }
+  renderResults();
+}
+function clearGroup(group){
+  const set = group==='flavor'?selFlavor:selPrice;
+  set.clear();
+  document.querySelectorAll(`.tag.${group}`).forEach(t=>t.classList.remove('active'));
+  renderResults();
+}
+
+/* ==================== MATCHING ==================== */
+function matchDish(d){
+  if(selCat.size>0 && !selCat.has(d.cat)) return false;
+
+  if(selFlavor.size>0){
+    let ok=false;
+    if(selFlavor.has('不辣') && d.spicy===0) ok=true;
+    if(selFlavor.has('微辣') && d.spicy===1) ok=true;
+    if(selFlavor.has('中辣') && d.spicy===2) ok=true;
+    if(selFlavor.has('特辣') && d.spicy>=3) ok=true;
+    for(const f of selFlavor){
+      if(['酸辣','麻辣','酸甜','清淡','甜'].includes(f) && d.flavor===f) ok=true;
+    }
+    if(!ok) return false;
+  }
+
+  if(selPrice.size>0){
+    let ok=false;
+    if(selPrice.has('≤15元') && d.priceLevel===1) ok=true;
+    if(selPrice.has('15-30元') && d.priceLevel===2) ok=true;
+    if(selPrice.has('30-50元') && d.priceLevel===3) ok=true;
+    if(selPrice.has('50元+') && d.priceLevel>=4) ok=true;
+    if(!ok) return false;
+  }
+  return true;
+}
+
+function getFiltered(){
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  return dishes.filter(d => {
+    if(q && !d.name.toLowerCase().includes(q) && !d.desc.toLowerCase().includes(q)) return false;
+    return matchDish(d);
+  });
+}
+
+/* ==================== RENDER ==================== */
+function spicyIcons(s){ return s>0?'🌶'.repeat(Math.min(s,3)):'' }
+const catEmojiMap = {};
+CATEGORIES.forEach(c => catEmojiMap[c.id]=c.emoji);
+
+function renderResults(){
+  const grid = document.getElementById('dishGrid');
+  const countEl = document.getElementById('resultCount');
+  const results = getFiltered();
+  countEl.textContent = results.length + ' 个';
+
+  if(results.length===0){
+    grid.innerHTML=`<div class="empty"><div class="icon">🤷</div><p>没有匹配结果<br/>试试减少筛选条件？</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = results.map((d,i) => `
+    <div class="dish-card${d.brand?' brand-card':''}" style="animation-delay:${Math.min(i*.025,.5)}s" onclick="openDetail('${d.name.replace(/'/g,"\\'")}')">
+      <div class="d-name">
+        <span>${catEmojiMap[d.cat]||'🍽'} ${d.name}</span>
+        ${d.brand?'<span class="brand-badge">品牌</span>':''}
+      </div>
+      <div class="d-desc">${d.desc}</div>
+      <div class="d-bottom">
+        <span class="d-price">${d.priceRange}/人</span>
+        <div class="d-extra">
+          ${spicyIcons(d.spicy)?`<span class="d-spicy">${spicyIcons(d.spicy)}</span>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* ==================== DETAIL ==================== */
+function openDetail(name){
+  const d=dishes.find(x=>x.name===name);
+  if(!d) return;
+  document.getElementById('detailName').textContent = (catEmojiMap[d.cat]||'🍽')+' '+d.name;
+  document.getElementById('detailInfo').innerHTML = `
+    <span class="mi mi-cat">${d.cat}</span>
+    <span class="mi mi-price">${d.priceRange}/人</span>
+    <span class="mi mi-flavor">${d.flavor}</span>
+    ${d.brand?'<span class="mi mi-brand">🏪 品牌连锁</span>':''}
+    ${d.spicy>0?`<span class="mi mi-spicy">${spicyIcons(d.spicy)} ${'微辣 中辣 特辣'.split(' ')[d.spicy-1]||'辣'}</span>`:''}
+  `;
+  document.getElementById('detailTip').textContent = '💡 '+d.desc;
+  document.getElementById('detailModal').classList.add('show');
+}
+function closeDetail(e){
+  if(!e||e.target.id==='detailModal') document.getElementById('detailModal').classList.remove('show');
+}
+
+/* ==================== RANDOM SPIN (仅主食) ==================== */
+let spinTimer=null;
+function spinRandom(){
+  // 过滤掉饮品、咖啡、甜品
+  let pool = getFiltered().filter(d => MEAL_CATS.has(d.cat));
+  if(pool.length===0) pool = dishes.filter(d => MEAL_CATS.has(d.cat));
+  if(pool.length===0) return;
+
+  const overlay = document.getElementById('spinOverlay');
+  const nameEl = document.getElementById('spinName');
+  const infoEl = document.getElementById('spinInfo');
+  const emojiEl = document.getElementById('spinEmoji');
+  const labelEl = document.getElementById('spinLabel');
+  const descEl = document.getElementById('spinDesc');
+  const actionsEl = document.getElementById('spinActions');
+
+  overlay.classList.add('show');
+  actionsEl.style.display='none';
+  nameEl.classList.remove('final');
+  labelEl.textContent='正在帮你选…';
+  emojiEl.textContent='🤔';
+  emojiEl.style.animation='spin 0.5s linear infinite';
+  descEl.textContent='';
+
+  const target = pool[Math.floor(Math.random()*pool.length)];
+  let count=0, total=22;
+  if(spinTimer) clearInterval(spinTimer);
+  spinTimer = setInterval(()=>{
+    const rd = pool[Math.floor(Math.random()*pool.length)];
+    nameEl.textContent = rd.name;
+    infoEl.innerHTML = `<span class="si si-cat">${rd.cat}</span><span class="si si-price">${rd.priceRange}</span>`;
+    count++;
+    if(count>=total){
+      clearInterval(spinTimer); spinTimer=null;
+      nameEl.textContent = target.name;
+      nameEl.classList.add('final');
+      infoEl.innerHTML = `
+        <span class="si si-cat">${catEmojiMap[target.cat]||''} ${target.cat}</span>
+        <span class="si si-price">${target.priceRange}/人</span>
+        ${target.brand?'<span class="si si-brand">🏪 品牌</span>':''}
+        ${target.spicy>0?`<span class="si" style="background:#fbe9e7;color:#d84315">${spicyIcons(target.spicy)}</span>`:''}
+      `;
+      descEl.textContent = target.desc;
+      emojiEl.textContent='🎉';
+      emojiEl.style.animation='bounce 0.5s ease';
+      labelEl.textContent='就决定是你了！';
+      actionsEl.style.display='flex';
+    }
+  },75);
+}
+function closeSpin(e){
+  if(!e||e.target.id==='spinOverlay'){
+    document.getElementById('spinOverlay').classList.remove('show');
+    if(spinTimer){clearInterval(spinTimer);spinTimer=null;}
+  }
+}
+
+/* ==================== TAB ==================== */
+function switchTab(el){
+  document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ==================== SCROLL ==================== */
+window.addEventListener('scroll',()=>{
+  document.getElementById('backTop').classList.toggle('show',window.scrollY>400);
+});
+
+/* ==================== INIT ==================== */
+renderResults();
+</script>
+</body>
+</html>
