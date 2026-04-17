@@ -298,15 +298,138 @@ body{
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 @media(min-width:481px){body{background:#e4e5e8}}
+
+/* ===== Dark Mode Toggle ===== */
+.dark-toggle{width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.dark-toggle:active{transform:scale(.9)}
+.header-row{display:flex;justify-content:space-between;align-items:center}
+
+/* ===== Toast ===== */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;z-index:500;opacity:0;transition:opacity .3s;pointer-events:none;max-width:320px;text-align:center;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ===== Exclude Tags ===== */
+.exclude-wrap{margin-bottom:16px}
+.exclude-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;cursor:pointer}
+.exclude-header .section-title{color:#999}
+.exclude-count{font-size:10px;background:#fef0f0;color:#f56c6c;padding:1px 6px;border-radius:8px;margin-left:4px}
+.exclude-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag.exclude{background:#f5f5f5;color:#999;border-color:#e8e8e8;font-size:12px;padding:5px 11px}
+.tag.exclude.active{background:#fef0f0;color:#f56c6c;border-color:#fca5a5;text-decoration:line-through}
+.tag.exclude.active::before{content:'✕ ';font-size:9px}
+
+/* ===== Delivery Buttons ===== */
+.modal-delivery{display:flex;gap:8px;margin-top:10px}
+.modal-delivery button{flex:1;padding:11px;border:1.5px solid #eee;border-radius:12px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.modal-delivery button:active{transform:scale(.97)}
+.modal-delivery .btn-mt{border-color:#ffe082;background:#fffde7;color:#f57f17}
+.modal-delivery .btn-ele{border-color:#90caf9;background:#e3f2fd;color:#1565c0}
+
+/* ===== History ===== */
+.history-section{margin-top:16px}
+.history-list{display:flex;flex-direction:column;gap:6px}
+.history-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fafbfc;border:1px solid #f0f1f3;border-radius:10px;font-size:13px;cursor:pointer;transition:all .2s}
+.history-item:active{transform:scale(.98)}
+.history-item .hi-emoji{font-size:18px;flex-shrink:0}
+.history-item .hi-name{flex:1;font-weight:500;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-item .hi-time{font-size:10px;color:#bbb;flex-shrink:0}
+.history-empty{text-align:center;padding:20px;color:#ccc;font-size:12px}
+
+/* ===== Refresh Button ===== */
+.refresh-btn{padding:6px 14px;border-radius:16px;border:1.5px solid #ffe0b2;background:#fff8f0;color:#e65100;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;margin-left:auto}
+.refresh-btn:active{transform:scale(.95)}
+
+/* ===== Time Badge ===== */
+.time-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:10px;background:linear-gradient(135deg,#e3f2fd,#e1f5fe);color:#0277bd;font-size:11px;font-weight:500;margin-bottom:10px}
+
+/* ===== Dark Mode Overrides ===== */
+body.dark{background:#0d1117;color:#e6edf3}
+body.dark .app{background:#161b22;box-shadow:0 0 60px rgba(0,0,0,.3)}
+body.dark .dish-card{background:#1c2333;border-color:#21262d}
+body.dark .dish-card.brand-card{background:linear-gradient(135deg,#2a1f15,#291e12);border-color:#3d2a15}
+body.dark .dish-card:hover{border-color:#30363d;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+body.dark .dish-card .d-name{color:#e6edf3}
+body.dark .dish-card .d-desc{color:#6e7681}
+body.dark .dish-card .d-cat{background:#21262d;color:#8b949e}
+body.dark .cat-item{background:#1c2333}
+body.dark .cat-item.active{background:#2a1f15;border-color:#ff6b35}
+body.dark .cat-item .cat-text{color:#8b949e}
+body.dark .cat-item.active .cat-text{color:#ff6b35}
+body.dark .tag.flavor{background:#2a1a0a;color:#ffab40;border-color:#3d2a15}
+body.dark .tag.flavor.active{background:#e65100;color:#fff;border-color:#e65100}
+body.dark .tag.price{background:#0d2818;color:#66bb6a;border-color:#1b4332}
+body.dark .tag.price.active{background:#2e7d32;color:#fff;border-color:#2e7d32}
+body.dark .tag.exclude{background:#1c2333;color:#6e7681;border-color:#21262d}
+body.dark .tag.exclude.active{background:#2d1519;color:#f56c6c;border-color:#5c2a2e}
+body.dark .search-input{background:#1c2333;border-color:#21262d;color:#e6edf3}
+body.dark .search-input:focus{border-color:#ff6b35;background:#21262d}
+body.dark .tabbar{background:#161b22;border-top-color:#21262d}
+body.dark .tab-item{color:#484f58}
+body.dark .tab-item.active{color:#ff6b35}
+body.dark .modal-sheet{background:#1c2333}
+body.dark .modal-sheet h3{color:#e6edf3}
+body.dark .modal-tip{background:linear-gradient(135deg,#2a1f10,#291e0f);color:#ffab40}
+body.dark .modal-delivery button{background:#21262d;border-color:#30363d}
+body.dark .modal-delivery .btn-mt{background:#2a2010;border-color:#5c4a1a;color:#ffd54f}
+body.dark .modal-delivery .btn-ele{background:#0d2040;border-color:#1a3560;color:#64b5f6}
+body.dark .spin-card{background:#1c2333}
+body.dark .spin-card .s-name{color:#e6edf3}
+body.dark .spin-card .s-name.final{color:#ff6b35}
+body.dark .spin-card .s-label{color:#6e7681}
+body.dark .spin-card .s-desc{color:#6e7681}
+body.dark .btn-again{background:#21262d;color:#8b949e}
+body.dark .section-title{color:#c9d1d9}
+body.dark .results-count{background:#21262d;color:#8b949e}
+body.dark .results-header h2{color:#e6edf3}
+body.dark .divider{background:#21262d}
+body.dark .random-note{color:#484f58}
+body.dark .back-top{background:#1c2333;border-color:#21262d;color:#8b949e}
+body.dark .empty{color:#484f58}
+body.dark .combo-card{background:linear-gradient(135deg,#2a1f15,#291e12);border-color:#3d2a15}
+body.dark .dc-card{background:#1c2333;border-color:#21262d}
+body.dark .dc-card .dc-name{color:#e6edf3}
+body.dark .tip-item{background:#1c2333;border-color:#21262d}
+body.dark .tip-item .ti-title{color:#e6edf3}
+body.dark .stat-box{background:#1c2333;border-color:#21262d}
+body.dark .menu-list{background:#21262d}
+body.dark .menu-item{background:#1c2333}
+body.dark .menu-item:active{background:#21262d}
+body.dark .menu-item .mi-text{color:#c9d1d9}
+body.dark .d-fav{background:rgba(28,35,51,.9)}
+body.dark .fav-item{background:#1c2333;border-color:#21262d}
+body.dark .fav-item .fav-name{color:#e6edf3}
+body.dark .fav-item .fav-meta{color:#6e7681}
+body.dark .fav-del{background:#2d1519;color:#f56c6c}
+body.dark .profile-name{color:#e6edf3}
+body.dark .profile-sub{color:#6e7681}
+body.dark .about-footer{color:#484f58}
+body.dark .modal-fav{background:#2d1519;color:#f56c6c}
+body.dark .modal-fav.liked{background:#f56c6c;color:#fff}
+body.dark .btn-fav-clear{background:#21262d;color:#6e7681}
+body.dark .dc-section-title{color:#c9d1d9}
+body.dark .page-title{color:#e6edf3}
+body.dark .history-item{background:#1c2333;border-color:#21262d}
+body.dark .history-item .hi-name{color:#e6edf3}
+body.dark .time-badge{background:linear-gradient(135deg,#0d2040,#0d1f30);color:#64b5f6}
+body.dark .refresh-btn{background:#2a1f15;border-color:#3d2a15;color:#ffab40}
+body.dark .exclude-count{background:#2d1519;color:#f56c6c}
+body.dark .toast{background:rgba(255,255,255,.9);color:#333}
+@media(min-width:481px){body.dark{background:#010409}}
 </style>
 </head>
 <body>
 
 <div class="app" id="app">
   <div class="header">
-    <h1>🍽️ 今天吃啥</h1>
-    <div class="sub">160+ 外卖品类 & 品牌，帮你秒选！</div>
+    <div class="header-row">
+      <div>
+        <h1>🍽️ 今天吃啥</h1>
+        <div class="sub">160+ 外卖品类 & 品牌，帮你秒选！</div>
+      </div>
+      <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" title="切换深色模式">🌙</button>
+    </div>
   </div>
 
   <!-- ====== Page: Order (主页) ====== -->
@@ -344,6 +467,15 @@ body{
         <button class="clear-btn" onclick="clearGroup('price')">清除</button>
       </div>
       <div class="tags" id="priceTags"></div>
+    </div>
+
+    <!-- 今天不想吃 -->
+    <div class="exclude-wrap">
+      <div class="exclude-header" onclick="toggleExcludePanel()">
+        <div class="section-title"><span class="dot" style="background:#999"></span> 🚫 今天不想吃 <span class="exclude-count" id="excludeCount" style="display:none"></span></div>
+        <button class="clear-btn" id="excludeToggleBtn">展开 ▾</button>
+      </div>
+      <div class="exclude-tags" id="excludeTags" style="display:none"></div>
     </div>
 
     <div class="divider"></div>
@@ -402,7 +534,11 @@ body{
     <div class="modal-tip" id="detailTip"></div>
     <div class="modal-actions">
       <button class="modal-fav" id="detailFavBtn" onclick="toggleFavFromDetail()">🤍 收藏</button>
-      <button class="modal-order" onclick="closeDetail()">👆 去下单</button>
+      <button class="modal-order" onclick="closeDetail()">👆 关闭</button>
+    </div>
+    <div class="modal-delivery">
+      <button class="btn-mt" onclick="openDelivery('meituan')">🟡 美团外卖</button>
+      <button class="btn-ele" onclick="openDelivery('eleme')">🔵 饿了么</button>
     </div>
   </div>
 </div>
@@ -417,12 +553,13 @@ body{
     <div class="s-desc" id="spinDesc"></div>
     <div class="s-actions" id="spinActions" style="display:none">
       <button class="btn-again" onclick="spinRandom()">🎲 再来</button>
-      <button class="btn-ok" onclick="closeSpin()">就它了 👍</button>
+      <button class="btn-ok" onclick="confirmSpin()">就它了 👍</button>
     </div>
   </div>
 </div>
 
 <div class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</div>
+<div class="toast" id="toast"></div>
 
 <script>
 /* ======================== DATA ======================== */
@@ -702,12 +839,97 @@ function toggleFav(n){
   renderResults();
 }
 let currentDetailName='';
+let lastSpinResult=null;
 function toggleFavFromDetail(){
   toggleFav(currentDetailName);
   const liked=isFav(currentDetailName);
   const btn=document.getElementById('detailFavBtn');
   btn.className='modal-fav'+(liked?' liked':'');
   btn.textContent=liked?'❤️ 已收藏':'🤍 收藏';
+}
+
+/* ==================== TOAST ==================== */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid=setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+/* ==================== DARK MODE ==================== */
+const DARK_KEY='today_eat_dark';
+function initDark(){
+  const isDark=localStorage.getItem(DARK_KEY)==='1';
+  if(isDark)document.body.classList.add('dark');
+  updateDarkBtn();
+}
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  const isDark=document.body.classList.contains('dark');
+  localStorage.setItem(DARK_KEY,isDark?'1':'0');
+  updateDarkBtn();
+}
+function updateDarkBtn(){
+  const btn=document.getElementById('darkToggle');
+  btn.textContent=document.body.classList.contains('dark')?'☀️':'🌙';
+}
+initDark();
+
+/* ==================== ORDER HISTORY ==================== */
+const HISTORY_KEY='today_eat_history';
+function getHistory(){try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]')}catch(e){return[]}}
+function addHistory(name){
+  let h=getHistory();
+  h.unshift({name,time:Date.now()});
+  if(h.length>30)h=h.slice(0,30);
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(h));
+}
+
+/* ==================== EXCLUDE CATEGORIES ==================== */
+const selExclude=new Set();
+function renderExcludeTags(){
+  const container=document.getElementById('excludeTags');
+  container.innerHTML=CATEGORIES.filter(c=>MEAL_CATS.has(c.id)).map(c=>
+    `<span class="tag exclude${selExclude.has(c.id)?' active':''}" data-id="${c.id}" onclick="toggleExclude(this)">${c.emoji} ${c.label}</span>`
+  ).join('');
+  const countEl=document.getElementById('excludeCount');
+  if(selExclude.size>0){countEl.style.display='';countEl.textContent=selExclude.size;}
+  else{countEl.style.display='none';}
+}
+function toggleExclude(el){
+  const id=el.dataset.id;
+  if(selExclude.has(id)){selExclude.delete(id);el.classList.remove('active');}
+  else{selExclude.add(id);el.classList.add('active');}
+  const countEl=document.getElementById('excludeCount');
+  if(selExclude.size>0){countEl.style.display='';countEl.textContent=selExclude.size;}
+  else{countEl.style.display='none';}
+  renderResults();
+}
+function toggleExcludePanel(){
+  const tags=document.getElementById('excludeTags');
+  const btn=document.getElementById('excludeToggleBtn');
+  if(tags.style.display==='none'){tags.style.display='flex';btn.textContent='收起 ▴';renderExcludeTags();}
+  else{tags.style.display='none';btn.textContent='展开 ▾';}
+}
+
+/* ==================== DELIVERY APP LINKS ==================== */
+function openDelivery(platform){
+  const name=currentDetailName.replace(/\(.*?\)/g,'').trim();
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(name).then(()=>{
+      showToast(`"${name}" 已复制，去${platform==='meituan'?'美团':'饿了么'}搜索吧！`);
+    }).catch(()=>showToast('复制失败，请手动搜索'));
+  }
+  // Try to open app / web
+  setTimeout(()=>{
+    if(platform==='meituan'){
+      window.open('https://waimai.meituan.com','_blank');
+    }else{
+      window.open('https://h5.ele.me','_blank');
+    }
+  },300);
+  closeDetail();
 }
 
 /* ==================== RENDER CATEGORY GRID ==================== */
@@ -759,6 +981,8 @@ function clearGroup(group){
 /* ==================== MATCHING ==================== */
 function matchDish(d){
   if(selCat.size>0 && !selCat.has(d.cat)) return false;
+  // Exclude categories
+  if(selExclude.size>0 && selExclude.has(d.cat)) return false;
 
   if(selFlavor.size>0){
     let ok=false;
@@ -896,6 +1120,7 @@ function spinRandomFromPool(pool){
       emojiEl.style.animation='bounce 0.5s ease';
       labelEl.textContent='就决定是你了！';
       actionsEl.style.display='flex';
+      lastSpinResult=target;
     }
   },75);
 }
@@ -910,6 +1135,14 @@ function spinRandom(){
   spinRandomFromPool(pool);
 }
 
+function confirmSpin(){
+  if(lastSpinResult){
+    addHistory(lastSpinResult.name);
+    showToast('已记录到点餐历史 📜');
+  }
+  document.getElementById('spinOverlay').classList.remove('show');
+  if(spinTimer){clearInterval(spinTimer);spinTimer=null;}
+}
 function closeSpin(e){
   if(!e||e.target.id==='spinOverlay'){
     document.getElementById('spinOverlay').classList.remove('show');
@@ -1005,6 +1238,18 @@ function randomFromFavs(){
 /* ==================== DISCOVER PAGE ==================== */
 function renderDiscover(){
   const page=document.getElementById('pageDiscover');
+
+  // ⏰ Time-based recommendations
+  function getTimeSlot(){
+    const h=new Date().getHours();
+    if(h>=6&&h<10) return {name:'早餐时间',icon:'🌅',cats:['粥汤','小吃','面食'],desc:'来份暖暖的早餐吧'};
+    if(h>=10&&h<14) return {name:'午餐时间',icon:'☀️',cats:['快餐','面食','粉面','菜馆','西式快餐','麻辣烫'],desc:'中午吃什么？'};
+    if(h>=14&&h<17) return {name:'下午茶时光',icon:'🍵',cats:['奶茶','咖啡','甜品','小吃'],desc:'来杯奶茶或甜品'};
+    if(h>=17&&h<21) return {name:'晚餐时间',icon:'🌆',cats:['快餐','面食','菜馆','火锅','特色','烧烤','日韩'],desc:'晚上吃点好的'};
+    return {name:'夜宵时间',icon:'🌙',cats:['烧烤','小吃','麻辣烫','粉面','粥汤'],desc:'饿了？来份夜宵'};
+  }
+  const timeSlot=getTimeSlot();
+
   const dayThemes=[
     {theme:'周日犒劳自己',icon:'🎉',cats:['火锅','特色','烧烤']},
     {theme:'周一快速搞定',icon:'⚡',cats:['快餐','面食']},
@@ -1016,7 +1261,7 @@ function renderDiscover(){
   ];
   const today=new Date().getDay();
   const theme=dayThemes[today];
-  const todayDishes=dishes.filter(d=>theme.cats.includes(d.cat)).sort(()=>Math.random()-.5).slice(0,8);
+  const todayDishes=dishes.filter(d=>timeSlot.cats.includes(d.cat)).sort(()=>Math.random()-.5).slice(0,8);
 
   // === 多种搭配主题池 ===
   const comboThemes=[
@@ -1059,10 +1304,15 @@ function renderDiscover(){
   const budgetPicks=dishes.filter(d=>d.priceLevel===1&&MEAL_CATS.has(d.cat)).sort(()=>Math.random()-.5).slice(0,8);
 
   page.innerHTML=`
-    <div class="page-title">🧭 发现美食</div>
+    <div class="page-title" style="justify-content:space-between">
+      <span>🧭 发现美食</span>
+      <button class="refresh-btn" onclick="renderDiscover()">🔄 换一批</button>
+    </div>
+
+    <div class="time-badge">${timeSlot.icon} ${timeSlot.name} · ${timeSlot.desc}</div>
 
     <div class="dc-section">
-      <div class="dc-section-title">${theme.icon} ${theme.theme} · 今日推荐</div>
+      <div class="dc-section-title">${timeSlot.icon} ${timeSlot.name}推荐 · ${theme.theme}</div>
       <div class="dc-scroll">
         ${todayDishes.map(d=>{
           const esc=d.name.replace(/'/g,"\\'");
@@ -1149,11 +1399,24 @@ function renderProfile(){
   const favCount=getFavs().length;
   const spinCount=parseInt(localStorage.getItem('today_eat_spins')||'0');
   const totalDishes=dishes.length;
+  const history=getHistory();
 
   const favDishes=getFavs().map(n=>dishes.find(d=>d.name===n)).filter(Boolean);
   const catCounts={};
   favDishes.forEach(d=>{catCounts[d.cat]=(catCounts[d.cat]||0)+1});
   const topCat=Object.entries(catCounts).sort((a,b)=>b[1]-a[1])[0];
+
+  // Format history time
+  function fmtTime(ts){
+    const d=new Date(ts);
+    const now=new Date();
+    const diff=now-d;
+    if(diff<60000) return '刚刚';
+    if(diff<3600000) return Math.floor(diff/60000)+'分钟前';
+    if(diff<86400000) return Math.floor(diff/3600000)+'小时前';
+    if(diff<172800000) return '昨天';
+    return (d.getMonth()+1)+'/'+d.getDate();
+  }
 
   page.innerHTML=`
     <div class="profile-header">
@@ -1172,11 +1435,28 @@ function renderProfile(){
         <div class="sb-label">随机次数</div>
       </div>
       <div class="stat-box">
-        <div class="sb-num">${totalDishes}</div>
-        <div class="sb-label">全部美食</div>
+        <div class="sb-num">${history.length}</div>
+        <div class="sb-label">点餐历史</div>
       </div>
     </div>
 
+    <!-- 📜 点餐历史 -->
+    <div class="history-section">
+      <div class="dc-section-title">📜 点餐历史 <span style="font-size:11px;color:#999;font-weight:400">最近30条</span></div>
+      ${history.length===0?'<div class="history-empty">还没有点餐记录，快去随机一个吧~</div>':
+        '<div class="history-list">'+history.slice(0,10).map(h=>{
+          const d=dishes.find(x=>x.name===h.name);
+          const esc=h.name.replace(/'/g,"\\'");
+          return `<div class="history-item" onclick="openDetail('${esc}')">
+            <span class="hi-emoji">${d?(catEmojiMap[d.cat]||'🍽'):'🍽'}</span>
+            <span class="hi-name">${h.name}</span>
+            <span class="hi-time">${fmtTime(h.time)}</span>
+          </div>`;
+        }).join('')+'</div>'
+        +(history.length>10?'<div style="text-align:center;padding:10px;font-size:11px;color:#999">仅显示最近10条</div>':'')}
+    </div>
+
+    <div style="height:16px"></div>
     <div class="menu-list">
       <div class="menu-item" onclick="switchTab(document.querySelectorAll('.tab-item')[0],'order')">
         <span class="mi-icon">🍽</span>
@@ -1199,6 +1479,11 @@ function renderProfile(){
     </div>
 
     <div class="menu-list">
+      <div class="menu-item" onclick="toggleDark()">
+        <span class="mi-icon">${document.body.classList.contains('dark')?'☀️':'🌙'}</span>
+        <span class="mi-text">${document.body.classList.contains('dark')?'浅色模式':'深色模式'}</span>
+        <span class="mi-arrow">›</span>
+      </div>
       <div class="menu-item" onclick="clearAllData()">
         <span class="mi-icon">🗑</span>
         <span class="mi-text">清除所有数据</span>
@@ -1212,25 +1497,26 @@ function renderProfile(){
       <div class="menu-item">
         <span class="mi-icon">ℹ️</span>
         <span class="mi-text">关于</span>
-        <span class="mi-val">v1.0</span>
+        <span class="mi-val">v2.0</span>
         <span class="mi-arrow">›</span>
       </div>
     </div>
 
     <div class="about-footer">
-      今天吃啥 v1.0<br/>
+      今天吃啥 v2.0<br/>
       Made with ❤️ · 解决选择困难症
     </div>
   `;
 }
 
 function clearAllData(){
-  if(!confirm('确定清除所有数据（包括收藏和使用记录）吗？'))return;
+  if(!confirm('确定清除所有数据（包括收藏、历史和使用记录）吗？'))return;
   localStorage.removeItem(FAV_KEY);
   localStorage.removeItem('today_eat_spins');
+  localStorage.removeItem(HISTORY_KEY);
   renderProfile();
   renderResults();
-  alert('数据已清除 ✨');
+  showToast('数据已清除 ✨');
 }
 function shareApp(){
   const url=window.location.href;

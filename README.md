@@ -1,7 +1,5 @@
 # 🍽️ 今天吃啥 — 外卖选择困难症终结者
 
-（试用：https://today-eat-c8g.pages.dev/）
-
 > 不知道吃什么？让它帮你选！
 
 一个简洁、无需安装的外卖推荐小工具，帮你**3秒决定今天吃什么**。
@@ -9,7 +7,7 @@
 ## ✨ 预览
 
 <p align="center">
-  <img src="preview.png" width="400" alt="今天吃啥 - 应用预览" />
+  <img src="preview.png" width="360" alt="首页筛选" />
 </p>
 
 ## 🚀 核心功能
