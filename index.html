@@ -1018,17 +1018,41 @@ function renderDiscover(){
   const theme=dayThemes[today];
   const todayDishes=dishes.filter(d=>theme.cats.includes(d.cat)).sort(()=>Math.random()-.5).slice(0,8);
 
-  // Meal + Drink combos
-  const mealPool=dishes.filter(d=>MEAL_CATS.has(d.cat));
-  const drinkPool=dishes.filter(d=>['奶茶','咖啡'].includes(d.cat));
+  // === 多种搭配主题池 ===
+  const comboThemes=[
+    {title:'🍱 + 🧋 快餐配奶茶',sub:'经典午餐搭配',
+     poolA:d=>['快餐'].includes(d.cat), poolB:d=>d.cat==='奶茶'},
+    {title:'🍜 + 🥟 面食配小吃',sub:'嗦面加个小菜更满足',
+     poolA:d=>['面食','粉面'].includes(d.cat), poolB:d=>d.cat==='小吃'},
+    {title:'🔥 + 🍺 烧烤配冰饮',sub:'夜宵黄金搭档',
+     poolA:d=>d.cat==='烧烤', poolB:d=>['奶茶','咖啡'].includes(d.cat)},
+    {title:'🫕 + 🍰 火锅配甜品',sub:'吃完辣的来点甜',
+     poolA:d=>d.cat==='火锅', poolB:d=>d.cat==='甜品'},
+    {title:'🍔 + ☕ 西快配咖啡',sub:'打工人的快乐套餐',
+     poolA:d=>d.cat==='西式快餐', poolB:d=>d.cat==='咖啡'},
+    {title:'🌶 + 🧋 辣食配甜饮',sub:'辣到飞起甜来解救',
+     poolA:d=>MEAL_CATS.has(d.cat)&&d.spicy>=2, poolB:d=>d.cat==='奶茶'&&d.flavor==='甜'},
+    {title:'🥣 + 🥟 粥汤配点心',sub:'养胃暖心组合',
+     poolA:d=>d.cat==='粥汤', poolB:d=>d.cat==='小吃'&&d.spicy===0},
+    {title:'🏮 + 🧋 菜馆配饮品',sub:'正餐饭后来一杯',
+     poolA:d=>['菜馆','特色'].includes(d.cat), poolB:d=>['奶茶','咖啡'].includes(d.cat)},
+    {title:'🍝 + ☕ 粉面配咖啡',sub:'嗦粉配美式 意外好搭',
+     poolA:d=>['粉面','麻辣烫'].includes(d.cat), poolB:d=>d.cat==='咖啡'},
+    {title:'🍱 + 🍰 快餐配甜品',sub:'饭后甜点 双倍快乐',
+     poolA:d=>['快餐','面食'].includes(d.cat), poolB:d=>d.cat==='甜品'},
+  ];
+
+  // 随机挑3个不同主题
+  const shuffledThemes=comboThemes.sort(()=>Math.random()-.5);
   const combos=[];
-  const usedMeals=new Set();
-  for(let i=0;i<3;i++){
-    let m;
-    do{m=mealPool[Math.floor(Math.random()*mealPool.length)]}while(usedMeals.has(m.name)&&usedMeals.size<mealPool.length);
-    usedMeals.add(m.name);
-    const dr=drinkPool[Math.floor(Math.random()*drinkPool.length)];
-    combos.push({meal:m,drink:dr});
+  for(const ct of shuffledThemes){
+    if(combos.length>=3) break;
+    const aPool=dishes.filter(ct.poolA);
+    const bPool=dishes.filter(ct.poolB);
+    if(aPool.length===0||bPool.length===0) continue;
+    const a=aPool[Math.floor(Math.random()*aPool.length)];
+    const b=bPool[Math.floor(Math.random()*bPool.length)];
+    combos.push({a,b,title:ct.title,sub:ct.sub});
   }
 
   // Budget picks
@@ -1054,19 +1078,22 @@ function renderDiscover(){
     </div>
 
     <div class="dc-section">
-      <div class="dc-section-title">🍽 + 🧋 神仙搭配</div>
+      <div class="dc-section-title">✨ 神仙搭配 <span style="font-size:11px;color:#999;font-weight:400;margin-left:4px">每次刷新随机换</span></div>
       ${combos.map(c=>{
-        const esc=c.meal.name.replace(/'/g,"\\'");
+        const escA=c.a.name.replace(/'/g,"\\'");
         return `
-        <div class="combo-card" onclick="openDetail('${esc}')">
+        <div class="combo-card" onclick="openDetail('${escA}')">
+          <div class="cc-row" style="margin-bottom:4px">
+            <span style="font-size:12px;color:#999">${c.title}</span>
+          </div>
           <div class="cc-row">
-            <span class="cc-item">${catEmojiMap[c.meal.cat]||''} ${c.meal.name}</span>
+            <span class="cc-item">${catEmojiMap[c.a.cat]||''} ${c.a.name}</span>
             <span class="cc-plus">+</span>
-            <span class="cc-item">${catEmojiMap[c.drink.cat]||''} ${c.drink.name}</span>
+            <span class="cc-item">${catEmojiMap[c.b.cat]||''} ${c.b.name}</span>
           </div>
           <div class="cc-row" style="margin-top:6px">
-            <span class="cc-sub">主食 + 饮品 完美搭配</span>
-            <span class="cc-total">${c.meal.priceRange} + ${c.drink.priceRange}</span>
+            <span class="cc-sub">${c.sub}</span>
+            <span class="cc-total">${c.a.priceRange} + ${c.b.priceRange}</span>
           </div>
         </div>`;
       }).join('')}
