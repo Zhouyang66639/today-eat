@@ -7,8 +7,7 @@
 ## ✨ 预览
 
 <p align="center">
-  <img src="preview.png" width="360" alt="首页筛选" />
-  <img src="preview2.png" width="360" alt="推荐列表" />
+  <img src="preview.png" width="400" alt="今天吃啥 - 应用预览" />
 </p>
 
 ## 🚀 核心功能

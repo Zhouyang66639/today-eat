@@ -46,7 +46,7 @@ body{
 .clear-btn{font-size:11px;color:#bbb;background:none;border:none;cursor:pointer;font-family:inherit;padding:3px 6px;border-radius:6px}
 .clear-btn:active{background:#f5f5f5}
 
-/* ===== Category Grid (美团 style) ===== */
+/* ===== Category Grid ===== */
 .cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .cat-item{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -98,11 +98,12 @@ body{
 .dish-card{
   background:#fafbfc;border:1px solid #f0f1f3;border-radius:13px;
   padding:11px;cursor:pointer;transition:all .2s;animation:fadeUp .3s ease both;
+  position:relative;
 }
 .dish-card:hover{border-color:#e0e0e0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .dish-card:active{transform:scale(.97)}
 .dish-card.brand-card{background:linear-gradient(135deg,#fffbf5,#fff8f0);border-color:#ffe8d6}
-.dish-card .d-name{font-size:14px;font-weight:600;margin-bottom:5px;line-height:1.35;color:#333;display:flex;align-items:center;gap:4px}
+.dish-card .d-name{font-size:14px;font-weight:600;margin-bottom:5px;line-height:1.35;color:#333;display:flex;align-items:center;gap:4px;padding-right:28px}
 .dish-card .brand-badge{
   font-size:9px;background:linear-gradient(135deg,#ffd700,#ffb300);color:#7c4a00;
   padding:1px 5px;border-radius:4px;font-weight:600;white-space:nowrap;flex-shrink:0;
@@ -114,6 +115,11 @@ body{
 .dish-card .d-extra{display:flex;align-items:center;gap:4px}
 .dish-card .d-cat{font-size:9px;padding:2px 6px;border-radius:5px;background:#f0f1f3;color:#888}
 .dish-card .d-spicy{font-size:10px}
+
+/* Fav heart on cards */
+.d-fav{position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(245,245,245,.9);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2}
+.d-fav:active{transform:scale(.8)}
+.d-fav.liked{background:#fef0f0}
 
 .empty{text-align:center;padding:44px 20px;color:#bbb;grid-column:1/-1}
 .empty .icon{font-size:48px;margin-bottom:10px;opacity:.6}
@@ -136,6 +142,7 @@ body{
 .tab-item.active{color:#ff6b35}
 .tab-item svg{width:21px;height:21px;fill:currentColor}
 .tab-item span{font-size:10px;font-weight:500}
+.tab-item .tab-badge{position:absolute;top:2px;right:calc(50% - 16px);width:16px;height:16px;border-radius:50%;background:#ff4757;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700}
 
 /* ===== Detail Modal ===== */
 .modal-overlay{
@@ -163,13 +170,15 @@ body{
   background:linear-gradient(135deg,#fff8e1,#fff3e0);border-radius:12px;
   padding:13px;font-size:13px;color:#e65100;line-height:1.7;
 }
+.modal-actions{display:flex;gap:10px;margin-top:14px}
+.modal-actions button{flex:1;padding:13px;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.modal-actions button:active{transform:scale(.97)}
+.modal-fav{background:#fef0f0;color:#f56c6c}
+.modal-fav.liked{background:#f56c6c;color:#fff}
 .modal-order{
-  margin-top:14px;width:100%;padding:13px;border:none;border-radius:12px;
   background:linear-gradient(135deg,#ff6b35,#ff4757);color:#fff;
-  font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;
-  transition:all .2s;
+  box-shadow:0 3px 10px rgba(255,71,87,.15);
 }
-.modal-order:active{transform:scale(.97)}
 
 /* ===== Spin Modal ===== */
 .spin-overlay{
@@ -220,6 +229,73 @@ body{
 .back-top.show{opacity:1;pointer-events:auto}
 .back-top:active{transform:scale(.9)}
 
+/* ===== Pages ===== */
+.page{padding:16px 20px 24px;display:none}
+
+/* ===== Favorites Page ===== */
+.fav-empty{text-align:center;padding:50px 20px;color:#bbb}
+.fav-empty .icon{font-size:52px;margin-bottom:12px;opacity:.5}
+.fav-empty p{font-size:13px;line-height:1.8}
+.fav-list{display:flex;flex-direction:column;gap:8px}
+.fav-item{display:flex;align-items:center;gap:12px;padding:12px;background:#fafbfc;border:1px solid #f0f1f3;border-radius:12px;transition:all .2s;animation:fadeUp .3s ease both;cursor:pointer}
+.fav-item:active{transform:scale(.98)}
+.fav-item .fav-emoji{font-size:26px;width:36px;text-align:center;flex-shrink:0}
+.fav-item .fav-info{flex:1;min-width:0}
+.fav-item .fav-name{font-size:14px;font-weight:600;color:#333;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fav-item .fav-meta{font-size:11px;color:#999;display:flex;gap:6px;align-items:center}
+.fav-item .fav-price{color:#ff6b35;font-weight:600}
+.fav-del{width:28px;height:28px;border-radius:50%;border:none;background:#fef0f0;color:#f56c6c;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.fav-del:active{transform:scale(.85)}
+.fav-actions{display:flex;gap:10px;margin-top:18px}
+.fav-actions button{flex:1;padding:11px;border-radius:12px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.fav-actions button:active{transform:scale(.97)}
+.btn-fav-clear{background:#f5f5f5;color:#999}
+.btn-fav-random{background:linear-gradient(135deg,#ff6b35,#ff4757);color:#fff;box-shadow:0 3px 10px rgba(255,71,87,.15)}
+
+/* ===== Discover Page ===== */
+.page-title{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:6px}
+.dc-section{margin-bottom:22px}
+.dc-section-title{font-size:15px;font-weight:600;color:#555;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.dc-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+.dc-scroll::-webkit-scrollbar{display:none}
+.dc-card{flex-shrink:0;width:130px;padding:12px;background:#fff;border:1px solid #f0f1f3;border-radius:12px;cursor:pointer;transition:all .2s}
+.dc-card:active{transform:scale(.96)}
+.dc-card .dc-emoji{font-size:24px;margin-bottom:6px}
+.dc-card .dc-name{font-size:13px;font-weight:600;color:#333;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc-card .dc-price{font-size:11px;color:#ff6b35;font-weight:500}
+.dc-card .dc-cat{font-size:10px;color:#999}
+.combo-card{padding:14px;background:linear-gradient(135deg,#fff8f0,#fff3e6);border:1px solid #ffe8d6;border-radius:14px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.combo-card:active{transform:scale(.98)}
+.combo-card .cc-row{display:flex;justify-content:space-between;align-items:center}
+.combo-card .cc-item{font-size:13px;color:#333;font-weight:500}
+.combo-card .cc-plus{font-size:16px;color:#ff6b35;font-weight:700;margin:0 8px}
+.combo-card .cc-total{font-size:12px;color:#ff6b35;font-weight:600}
+.combo-card .cc-sub{font-size:11px;color:#999;margin-top:4px}
+.tip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tip-item{padding:16px 12px;background:#fff;border:1px solid #f0f1f3;border-radius:12px;text-align:center;cursor:pointer;transition:all .2s}
+.tip-item:active{transform:scale(.96)}
+.tip-item .ti-emoji{font-size:28px;margin-bottom:6px}
+.tip-item .ti-title{font-size:13px;font-weight:600;color:#333;margin-bottom:2px}
+.tip-item .ti-desc{font-size:10px;color:#999;line-height:1.4}
+
+/* ===== Profile Page ===== */
+.profile-header{text-align:center;padding:20px 0 16px}
+.profile-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#ff6b35,#ff4757);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 10px;box-shadow:0 4px 16px rgba(255,107,53,.25)}
+.profile-name{font-size:18px;font-weight:700;color:#333}
+.profile-sub{font-size:12px;color:#999;margin-top:2px}
+.stats-row{display:flex;gap:10px;margin-bottom:20px}
+.stat-box{flex:1;text-align:center;padding:14px 8px;background:#fafbfc;border-radius:12px;border:1px solid #f0f1f3}
+.stat-box .sb-num{font-size:22px;font-weight:800;color:#ff6b35}
+.stat-box .sb-label{font-size:10px;color:#999;margin-top:2px}
+.menu-list{display:flex;flex-direction:column;gap:1px;background:#f0f1f3;border-radius:12px;overflow:hidden;margin-bottom:16px}
+.menu-item{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;cursor:pointer;transition:background .15s}
+.menu-item:active{background:#f9f9f9}
+.menu-item .mi-icon{font-size:18px;width:28px;text-align:center}
+.menu-item .mi-text{flex:1;font-size:14px;color:#333;font-weight:500}
+.menu-item .mi-arrow{color:#ccc;font-size:12px}
+.menu-item .mi-val{font-size:12px;color:#999;margin-right:4px}
+.about-footer{text-align:center;padding:20px 0;font-size:11px;color:#ccc;line-height:1.8}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
 @media(min-width:481px){body{background:#e4e5e8}}
@@ -233,6 +309,8 @@ body{
     <div class="sub">160+ 外卖品类 & 品牌，帮你秒选！</div>
   </div>
 
+  <!-- ====== Page: Order (主页) ====== -->
+  <div id="pageOrder">
   <div class="random-wrap">
     <button class="random-btn" onclick="spinRandom()">
       <span class="dice">🎲</span> 选不了！帮我随机来一个
@@ -283,23 +361,33 @@ body{
       <div class="dish-grid" id="dishGrid"></div>
     </div>
   </div>
+  </div><!-- /pageOrder -->
+
+  <!-- ====== Page: Favorites ====== -->
+  <div class="page" id="pageFav"></div>
+
+  <!-- ====== Page: Discover ====== -->
+  <div class="page" id="pageDiscover"></div>
+
+  <!-- ====== Page: Profile ====== -->
+  <div class="page" id="pageMe"></div>
 </div>
 
 <!-- TabBar -->
 <div class="tabbar">
-  <button class="tab-item active" onclick="switchTab(this)">
+  <button class="tab-item active" onclick="switchTab(this,'order')">
     <svg viewBox="0 0 24 24"><path d="M8.1 13.34l2.83-2.83L3.91 3.5a2 2 0 000 2.82l4.19 4.19zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.46-4.2-1.1-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87a1 1 0 000 1.41 1 1 0 001.41 0L12 14.41l6.88 6.88a1 1 0 001.41 0 1 1 0 000-1.41L13.41 13l1.47-1.47z"/></svg>
     <span>点餐</span>
   </button>
-  <button class="tab-item" onclick="switchTab(this)">
+  <button class="tab-item" onclick="switchTab(this,'fav')" style="position:relative">
     <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
     <span>收藏</span>
   </button>
-  <button class="tab-item" onclick="switchTab(this)">
+  <button class="tab-item" onclick="switchTab(this,'discover')">
     <svg viewBox="0 0 24 24"><path d="M12 10.9c-.61 0-1.1.49-1.1 1.1s.49 1.1 1.1 1.1c.61 0 1.1-.49 1.1-1.1s-.49-1.1-1.1-1.1zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm2.19 12.19L6 18l3.81-8.19L18 6l-3.81 8.19z"/></svg>
     <span>发现</span>
   </button>
-  <button class="tab-item" onclick="switchTab(this)">
+  <button class="tab-item" onclick="switchTab(this,'me')">
     <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
     <span>我的</span>
   </button>
@@ -312,7 +400,10 @@ body{
     <h3 id="detailName"></h3>
     <div class="modal-info" id="detailInfo"></div>
     <div class="modal-tip" id="detailTip"></div>
-    <button class="modal-order" onclick="closeDetail()">👆 打开美团/饿了么搜索下单</button>
+    <div class="modal-actions">
+      <button class="modal-fav" id="detailFavBtn" onclick="toggleFavFromDetail()">🤍 收藏</button>
+      <button class="modal-order" onclick="closeDetail()">👆 去下单</button>
+    </div>
   </div>
 </div>
 
@@ -599,6 +690,26 @@ const selCat = new Set();
 const selFlavor = new Set();
 const selPrice = new Set();
 
+/* ==================== FAVORITES (localStorage) ==================== */
+const FAV_KEY='today_eat_favs';
+function getFavs(){try{return JSON.parse(localStorage.getItem(FAV_KEY)||'[]')}catch(e){return[]}}
+function saveFavs(a){localStorage.setItem(FAV_KEY,JSON.stringify(a))}
+function isFav(n){return getFavs().includes(n)}
+function toggleFav(n){
+  let f=getFavs();
+  if(f.includes(n))f=f.filter(x=>x!==n);else f.push(n);
+  saveFavs(f);
+  renderResults();
+}
+let currentDetailName='';
+function toggleFavFromDetail(){
+  toggleFav(currentDetailName);
+  const liked=isFav(currentDetailName);
+  const btn=document.getElementById('detailFavBtn');
+  btn.className='modal-fav'+(liked?' liked':'');
+  btn.textContent=liked?'❤️ 已收藏':'🤍 收藏';
+}
+
 /* ==================== RENDER CATEGORY GRID ==================== */
 (function renderCatGrid(){
   const grid = document.getElementById('catGrid');
@@ -696,8 +807,14 @@ function renderResults(){
     return;
   }
 
-  grid.innerHTML = results.map((d,i) => `
-    <div class="dish-card${d.brand?' brand-card':''}" style="animation-delay:${Math.min(i*.025,.5)}s" onclick="openDetail('${d.name.replace(/'/g,"\\'")}')">
+  grid.innerHTML = results.map((d,i) => {
+    const esc = d.name.replace(/'/g,"\\'");
+    const liked = isFav(d.name);
+    return `
+    <div class="dish-card${d.brand?' brand-card':''}" style="animation-delay:${Math.min(i*.025,.5)}s" onclick="openDetail('${esc}')">
+      <button class="d-fav${liked?' liked':''}" onclick="event.stopPropagation();toggleFav('${esc}');this.classList.toggle('liked');this.textContent=this.classList.contains('liked')?'❤️':'🤍'">
+        ${liked?'❤️':'🤍'}
+      </button>
       <div class="d-name">
         <span>${catEmojiMap[d.cat]||'🍽'} ${d.name}</span>
         ${d.brand?'<span class="brand-badge">品牌</span>':''}
@@ -709,13 +826,14 @@ function renderResults(){
           ${spicyIcons(d.spicy)?`<span class="d-spicy">${spicyIcons(d.spicy)}</span>`:''}
         </div>
       </div>
-    </div>`).join('');
+    </div>`}).join('');
 }
 
 /* ==================== DETAIL ==================== */
 function openDetail(name){
   const d=dishes.find(x=>x.name===name);
   if(!d) return;
+  currentDetailName=name;
   document.getElementById('detailName').textContent = (catEmojiMap[d.cat]||'🍽')+' '+d.name;
   document.getElementById('detailInfo').innerHTML = `
     <span class="mi mi-cat">${d.cat}</span>
@@ -725,6 +843,10 @@ function openDetail(name){
     ${d.spicy>0?`<span class="mi mi-spicy">${spicyIcons(d.spicy)} ${'微辣 中辣 特辣'.split(' ')[d.spicy-1]||'辣'}</span>`:''}
   `;
   document.getElementById('detailTip').textContent = '💡 '+d.desc;
+  const liked=isFav(name);
+  const favBtn=document.getElementById('detailFavBtn');
+  favBtn.className='modal-fav'+(liked?' liked':'');
+  favBtn.textContent=liked?'❤️ 已收藏':'🤍 收藏';
   document.getElementById('detailModal').classList.add('show');
 }
 function closeDetail(e){
@@ -733,19 +855,15 @@ function closeDetail(e){
 
 /* ==================== RANDOM SPIN (仅主食) ==================== */
 let spinTimer=null;
-function spinRandom(){
-  // 过滤掉饮品、咖啡、甜品
-  let pool = getFiltered().filter(d => MEAL_CATS.has(d.cat));
-  if(pool.length===0) pool = dishes.filter(d => MEAL_CATS.has(d.cat));
+function spinRandomFromPool(pool){
   if(pool.length===0) return;
-
-  const overlay = document.getElementById('spinOverlay');
-  const nameEl = document.getElementById('spinName');
-  const infoEl = document.getElementById('spinInfo');
-  const emojiEl = document.getElementById('spinEmoji');
-  const labelEl = document.getElementById('spinLabel');
-  const descEl = document.getElementById('spinDesc');
-  const actionsEl = document.getElementById('spinActions');
+  const overlay=document.getElementById('spinOverlay');
+  const nameEl=document.getElementById('spinName');
+  const infoEl=document.getElementById('spinInfo');
+  const emojiEl=document.getElementById('spinEmoji');
+  const labelEl=document.getElementById('spinLabel');
+  const descEl=document.getElementById('spinDesc');
+  const actionsEl=document.getElementById('spinActions');
 
   overlay.classList.add('show');
   actionsEl.style.display='none';
@@ -755,25 +873,25 @@ function spinRandom(){
   emojiEl.style.animation='spin 0.5s linear infinite';
   descEl.textContent='';
 
-  const target = pool[Math.floor(Math.random()*pool.length)];
-  let count=0, total=22;
-  if(spinTimer) clearInterval(spinTimer);
-  spinTimer = setInterval(()=>{
-    const rd = pool[Math.floor(Math.random()*pool.length)];
-    nameEl.textContent = rd.name;
-    infoEl.innerHTML = `<span class="si si-cat">${rd.cat}</span><span class="si si-price">${rd.priceRange}</span>`;
+  const target=pool[Math.floor(Math.random()*pool.length)];
+  let count=0,total=22;
+  if(spinTimer)clearInterval(spinTimer);
+  spinTimer=setInterval(()=>{
+    const rd=pool[Math.floor(Math.random()*pool.length)];
+    nameEl.textContent=rd.name;
+    infoEl.innerHTML=`<span class="si si-cat">${rd.cat}</span><span class="si si-price">${rd.priceRange}</span>`;
     count++;
     if(count>=total){
-      clearInterval(spinTimer); spinTimer=null;
-      nameEl.textContent = target.name;
+      clearInterval(spinTimer);spinTimer=null;
+      nameEl.textContent=target.name;
       nameEl.classList.add('final');
-      infoEl.innerHTML = `
+      infoEl.innerHTML=`
         <span class="si si-cat">${catEmojiMap[target.cat]||''} ${target.cat}</span>
         <span class="si si-price">${target.priceRange}/人</span>
         ${target.brand?'<span class="si si-brand">🏪 品牌</span>':''}
         ${target.spicy>0?`<span class="si" style="background:#fbe9e7;color:#d84315">${spicyIcons(target.spicy)}</span>`:''}
       `;
-      descEl.textContent = target.desc;
+      descEl.textContent=target.desc;
       emojiEl.textContent='🎉';
       emojiEl.style.animation='bounce 0.5s ease';
       labelEl.textContent='就决定是你了！';
@@ -781,6 +899,17 @@ function spinRandom(){
     }
   },75);
 }
+
+function spinRandom(){
+  let pool=getFiltered().filter(d=>MEAL_CATS.has(d.cat));
+  if(pool.length===0) pool=dishes.filter(d=>MEAL_CATS.has(d.cat));
+  if(pool.length===0) return;
+  // Track usage
+  let c=parseInt(localStorage.getItem('today_eat_spins')||'0');
+  localStorage.setItem('today_eat_spins',String(c+1));
+  spinRandomFromPool(pool);
+}
+
 function closeSpin(e){
   if(!e||e.target.id==='spinOverlay'){
     document.getElementById('spinOverlay').classList.remove('show');
@@ -788,10 +917,303 @@ function closeSpin(e){
   }
 }
 
-/* ==================== TAB ==================== */
-function switchTab(el){
+/* ==================== TAB SWITCHING ==================== */
+function switchTab(el,page){
   document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
+
+  // Hide all pages
+  document.getElementById('pageOrder').style.display='none';
+  document.getElementById('pageFav').style.display='none';
+  document.getElementById('pageDiscover').style.display='none';
+  document.getElementById('pageMe').style.display='none';
+
+  if(page==='order'){
+    document.getElementById('pageOrder').style.display='';
+  }else if(page==='fav'){
+    document.getElementById('pageFav').style.display='block';
+    renderFavorites();
+  }else if(page==='discover'){
+    document.getElementById('pageDiscover').style.display='block';
+    renderDiscover();
+  }else if(page==='me'){
+    document.getElementById('pageMe').style.display='block';
+    renderProfile();
+  }
+  window.scrollTo({top:0});
+}
+
+/* ==================== FAVORITES PAGE ==================== */
+function renderFavorites(){
+  const page=document.getElementById('pageFav');
+  const favNames=getFavs();
+  const favDishes=favNames.map(n=>dishes.find(d=>d.name===n)).filter(Boolean);
+
+  if(favDishes.length===0){
+    page.innerHTML=`
+      <div class="page-title">📑 我的收藏</div>
+      <div class="fav-empty">
+        <div class="icon">💔</div>
+        <p>还没有收藏任何美食<br/>点击卡片上的 🤍 即可收藏</p>
+      </div>`;
+    return;
+  }
+
+  page.innerHTML=`
+    <div class="page-title">📑 我的收藏 <span style="font-size:12px;color:#999;font-weight:400;margin-left:4px">${favDishes.length} 个</span></div>
+    <div class="fav-list">
+      ${favDishes.map((d,i)=>{
+        const esc=d.name.replace(/'/g,"\\'");
+        return `
+        <div class="fav-item" style="animation-delay:${i*.04}s" onclick="openDetail('${esc}')">
+          <div class="fav-emoji">${catEmojiMap[d.cat]||'🍽'}</div>
+          <div class="fav-info">
+            <div class="fav-name">${d.name}${d.brand?' <span style="font-size:9px;background:linear-gradient(135deg,#ffd700,#ffb300);color:#7c4a00;padding:1px 5px;border-radius:4px">品牌</span>':''}</div>
+            <div class="fav-meta">
+              <span class="fav-price">${d.priceRange}/人</span>
+              <span>${d.cat}</span>
+              <span>${d.flavor}</span>
+            </div>
+          </div>
+          <button class="fav-del" onclick="event.stopPropagation();removeFav('${esc}')">✕</button>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="fav-actions">
+      <button class="btn-fav-clear" onclick="clearAllFavs()">🗑 清空收藏</button>
+      <button class="btn-fav-random" onclick="randomFromFavs()">🎲 从收藏中随机</button>
+    </div>`;
+}
+
+function removeFav(n){
+  let f=getFavs().filter(x=>x!==n);
+  saveFavs(f);
+  renderFavorites();
+}
+function clearAllFavs(){
+  if(!confirm('确定清空所有收藏吗？'))return;
+  saveFavs([]);
+  renderFavorites();
+  renderResults();
+}
+function randomFromFavs(){
+  const favDishes=getFavs().map(n=>dishes.find(d=>d.name===n)).filter(d=>d&&MEAL_CATS.has(d.cat));
+  if(favDishes.length===0){alert('收藏中没有主食类美食哦');return;}
+  spinRandomFromPool(favDishes);
+}
+
+/* ==================== DISCOVER PAGE ==================== */
+function renderDiscover(){
+  const page=document.getElementById('pageDiscover');
+  const dayThemes=[
+    {theme:'周日犒劳自己',icon:'🎉',cats:['火锅','特色','烧烤']},
+    {theme:'周一快速搞定',icon:'⚡',cats:['快餐','面食']},
+    {theme:'周二尝点新的',icon:'🌍',cats:['西式快餐','菜馆']},
+    {theme:'周三嗦粉日',icon:'🍜',cats:['粉面','麻辣烫']},
+    {theme:'周四暖胃一下',icon:'🥣',cats:['粥汤','面食','火锅']},
+    {theme:'周五放肆吃',icon:'🔥',cats:['烧烤','火锅','小吃','特色']},
+    {theme:'周六好好吃饭',icon:'⭐',cats:['菜馆','特色']},
+  ];
+  const today=new Date().getDay();
+  const theme=dayThemes[today];
+  const todayDishes=dishes.filter(d=>theme.cats.includes(d.cat)).sort(()=>Math.random()-.5).slice(0,8);
+
+  // Meal + Drink combos
+  const mealPool=dishes.filter(d=>MEAL_CATS.has(d.cat));
+  const drinkPool=dishes.filter(d=>['奶茶','咖啡'].includes(d.cat));
+  const combos=[];
+  const usedMeals=new Set();
+  for(let i=0;i<3;i++){
+    let m;
+    do{m=mealPool[Math.floor(Math.random()*mealPool.length)]}while(usedMeals.has(m.name)&&usedMeals.size<mealPool.length);
+    usedMeals.add(m.name);
+    const dr=drinkPool[Math.floor(Math.random()*drinkPool.length)];
+    combos.push({meal:m,drink:dr});
+  }
+
+  // Budget picks
+  const budgetPicks=dishes.filter(d=>d.priceLevel===1&&MEAL_CATS.has(d.cat)).sort(()=>Math.random()-.5).slice(0,8);
+
+  page.innerHTML=`
+    <div class="page-title">🧭 发现美食</div>
+
+    <div class="dc-section">
+      <div class="dc-section-title">${theme.icon} ${theme.theme} · 今日推荐</div>
+      <div class="dc-scroll">
+        ${todayDishes.map(d=>{
+          const esc=d.name.replace(/'/g,"\\'");
+          return `
+          <div class="dc-card" onclick="openDetail('${esc}')">
+            <div class="dc-emoji">${catEmojiMap[d.cat]||'🍽'}</div>
+            <div class="dc-name">${d.name}</div>
+            <div class="dc-price">${d.priceRange}/人</div>
+            <div class="dc-cat">${d.cat}${d.brand?' · 品牌':''}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="dc-section">
+      <div class="dc-section-title">🍽 + 🧋 神仙搭配</div>
+      ${combos.map(c=>{
+        const esc=c.meal.name.replace(/'/g,"\\'");
+        return `
+        <div class="combo-card" onclick="openDetail('${esc}')">
+          <div class="cc-row">
+            <span class="cc-item">${catEmojiMap[c.meal.cat]||''} ${c.meal.name}</span>
+            <span class="cc-plus">+</span>
+            <span class="cc-item">${catEmojiMap[c.drink.cat]||''} ${c.drink.name}</span>
+          </div>
+          <div class="cc-row" style="margin-top:6px">
+            <span class="cc-sub">主食 + 饮品 完美搭配</span>
+            <span class="cc-total">${c.meal.priceRange} + ${c.drink.priceRange}</span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="dc-section">
+      <div class="dc-section-title">💰 平价之选（15元以内）</div>
+      <div class="dc-scroll">
+        ${budgetPicks.map(d=>{
+          const esc=d.name.replace(/'/g,"\\'");
+          return `
+          <div class="dc-card" onclick="openDetail('${esc}')">
+            <div class="dc-emoji">${catEmojiMap[d.cat]||'🍽'}</div>
+            <div class="dc-name">${d.name}</div>
+            <div class="dc-price">${d.priceRange}/人</div>
+            <div class="dc-cat">${d.cat}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="dc-section">
+      <div class="dc-section-title">💡 外卖省钱小贴士</div>
+      <div class="tip-grid">
+        <div class="tip-item">
+          <div class="ti-emoji">⏰</div>
+          <div class="ti-title">错峰点餐</div>
+          <div class="ti-desc">避开11:30-12:30<br/>配送更快优惠更多</div>
+        </div>
+        <div class="tip-item">
+          <div class="ti-emoji">🎫</div>
+          <div class="ti-title">先领红包</div>
+          <div class="ti-desc">每天可领外卖红包<br/>能省好几块</div>
+        </div>
+        <div class="tip-item">
+          <div class="ti-emoji">👥</div>
+          <div class="ti-title">拼单更划算</div>
+          <div class="ti-desc">跟同事一起点<br/>凑满减省更多</div>
+        </div>
+        <div class="tip-item">
+          <div class="ti-emoji">⭐</div>
+          <div class="ti-title">看评价点单</div>
+          <div class="ti-desc">月售高+评分高<br/>踩雷概率更低</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ==================== PROFILE PAGE ==================== */
+function renderProfile(){
+  const page=document.getElementById('pageMe');
+  const favCount=getFavs().length;
+  const spinCount=parseInt(localStorage.getItem('today_eat_spins')||'0');
+  const totalDishes=dishes.length;
+
+  const favDishes=getFavs().map(n=>dishes.find(d=>d.name===n)).filter(Boolean);
+  const catCounts={};
+  favDishes.forEach(d=>{catCounts[d.cat]=(catCounts[d.cat]||0)+1});
+  const topCat=Object.entries(catCounts).sort((a,b)=>b[1]-a[1])[0];
+
+  page.innerHTML=`
+    <div class="profile-header">
+      <div class="profile-avatar">😋</div>
+      <div class="profile-name">干饭达人</div>
+      <div class="profile-sub">每一餐都值得被认真对待</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="sb-num">${favCount}</div>
+        <div class="sb-label">收藏美食</div>
+      </div>
+      <div class="stat-box">
+        <div class="sb-num">${spinCount}</div>
+        <div class="sb-label">随机次数</div>
+      </div>
+      <div class="stat-box">
+        <div class="sb-num">${totalDishes}</div>
+        <div class="sb-label">全部美食</div>
+      </div>
+    </div>
+
+    <div class="menu-list">
+      <div class="menu-item" onclick="switchTab(document.querySelectorAll('.tab-item')[0],'order')">
+        <span class="mi-icon">🍽</span>
+        <span class="mi-text">去点餐</span>
+        <span class="mi-val">${totalDishes} 种可选</span>
+        <span class="mi-arrow">›</span>
+      </div>
+      <div class="menu-item" onclick="switchTab(document.querySelectorAll('.tab-item')[1],'fav')">
+        <span class="mi-icon">📑</span>
+        <span class="mi-text">我的收藏</span>
+        <span class="mi-val">${favCount} 个</span>
+        <span class="mi-arrow">›</span>
+      </div>
+      <div class="menu-item">
+        <span class="mi-icon">😋</span>
+        <span class="mi-text">口味偏好</span>
+        <span class="mi-val">${topCat?(catEmojiMap[topCat[0]]||'')+' '+topCat[0]+'爱好者':'未设置'}</span>
+        <span class="mi-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="menu-list">
+      <div class="menu-item" onclick="clearAllData()">
+        <span class="mi-icon">🗑</span>
+        <span class="mi-text">清除所有数据</span>
+        <span class="mi-arrow">›</span>
+      </div>
+      <div class="menu-item" onclick="shareApp()">
+        <span class="mi-icon">🔗</span>
+        <span class="mi-text">分享给朋友</span>
+        <span class="mi-arrow">›</span>
+      </div>
+      <div class="menu-item">
+        <span class="mi-icon">ℹ️</span>
+        <span class="mi-text">关于</span>
+        <span class="mi-val">v1.0</span>
+        <span class="mi-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="about-footer">
+      今天吃啥 v1.0<br/>
+      Made with ❤️ · 解决选择困难症
+    </div>
+  `;
+}
+
+function clearAllData(){
+  if(!confirm('确定清除所有数据（包括收藏和使用记录）吗？'))return;
+  localStorage.removeItem(FAV_KEY);
+  localStorage.removeItem('today_eat_spins');
+  renderProfile();
+  renderResults();
+  alert('数据已清除 ✨');
+}
+function shareApp(){
+  const url=window.location.href;
+  if(navigator.share){
+    navigator.share({title:'今天吃啥',text:'不知道吃什么？试试这个外卖推荐小工具！',url:url});
+  }else if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(()=>alert('链接已复制到剪贴板 📋\n分享给朋友吧！')).catch(()=>prompt('复制下面的链接分享给朋友：',url));
+  }else{
+    prompt('复制下面的链接分享给朋友：',url);
+  }
 }
 
 /* ==================== SCROLL ==================== */
